@@ -1,4 +1,80 @@
-site_name: My MkDocs Material Documentation
-site_url: https://sitename.example
+site_name: 3D Printed Quadrotors
+site_description:  Multi-agent quadrotors flying in formation using ROS2 
+site_url: https://austin006.github.io/3d_printed_quad
+site_author: Austin McGlashan and Leon Weng
+
 theme:
   name: material
+  font:
+    text: Roboto
+    code: Roboto Mono
+  # logo: assets/Initials.png
+  icon:
+    logo: fontawesome/solid/m
+
+  favicon: /assets/favicon.ico
+  features:
+    - navigation.footer
+    - navigation.tabs
+    - navigation.sections
+    - toc.follow
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.select
+
+  palette:
+    # Dark Mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+      primary: blue grey
+      accent: deep orange
+
+    # Light Mode
+    - scheme: default
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+      primary: blue
+      accent: pink
+
+markdown_extensions:
+- attr_list
+- md_in_html
+- pymdownx.emoji:
+    emoji_index: !!python/name:material.extensions.emoji.twemoji
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg
+- pymdownx.highlight:
+    anchor_linenums: true
+    line_spans: __span
+    pygments_lang_class: true
+- pymdownx.inlinehilite
+- pymdownx.snippets
+- pymdownx.superfences:
+    custom_fences:
+      - name: mermaid
+        class: mermaid
+        format: !!python/name:pymdownx.superfences.fence_code_format
+- pymdownx.tabbed:
+    alternate_style: true
+- admonition
+- pymdownx.details
+- footnotes
+- pymdownx.blocks.caption
+
+nav:
+  - Home: index.md
+  - Hardware:
+    - Materials: materials.md
+    - Transmitter Setup: transmitter_setup.md
+    - Wiring: wiring.md
+  - Software:
+    - QGroundControl Setup: qgroundcontrol_setup.md
+    - ROS2: ros2.md
+    - Gazebo: gazebo.md
+    - Raspberry Pi: raspberry_pi.md
+  - Potential Revisions: potential_revisions.md
+  - MAGICC Lab: https://byu-magicc.github.io/
