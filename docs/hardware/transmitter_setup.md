@@ -5,7 +5,7 @@
 
 ## 1. Open the Radio Setup menu
 
-![Transmitter](assets/Picture1.jpg)
+![Transmitter](../assets/Picture1.jpg){ width="100%" }
 /// caption
 Figure 1
 ///
@@ -15,7 +15,7 @@ Figure 1
 
 ## 2. Navigate to Model Setup
 
-![Transmitter](assets/Picture2.jpg)
+![Transmitter](../assets/Picture2.jpg){ width="100%" }
 /// caption
 Figure 2
 ///
@@ -27,7 +27,7 @@ Figure 2
 
 ## 3. Verify Internal RF parameters
 
-![Transmitter](assets/Picture3.jpg)
+![Transmitter](../assets/Picture3.jpg){ width="100%" }
 /// caption
 Figure 3
 ///
@@ -45,7 +45,7 @@ Figure 3
 
 ## 4. Bind the receiver
 
-![Transmitter](assets/Picture4.jpg)
+![Transmitter](../assets/Picture4.jpg){ width="100%" }
 /// caption
 Figure 4
 ///
@@ -56,7 +56,7 @@ Figure 4
 
 ## 5. Bind the quadcopter receiver to the Transmitter
 
-![Transmitter](assets/Picture5.jpg)
+![Transmitter](../assets/Picture5.jpg){ width="100%" }
 /// caption
 Figure 5
 ///

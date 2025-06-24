@@ -1,10 +1,10 @@
-Follow these steps once the quadcopter is assembled
+Follow these steps once the quadcopter is assembled and ready to fly.
 
 ## 1. Update firmware
 
 * Update the framework when using the **Holybro Telemetry Radio Modules**
 
-![QGC](assets/Picture6.png)
+![QGC](../assets/Picture6.png)
 /// caption
 Holybro Telemetry Radio Module
 ///
@@ -13,12 +13,12 @@ Holybro Telemetry Radio Module
 * In QGroundControl, open **Vehicle Setup –▸ Firmware**, select each radio in turn, and click "Update"
 * Once updated, the radio link lets you monitor Pixhawk data wirelessly—no USB cable required
 
-![QGC](assets/Picture7.png)
+![QGC](../assets/Picture7.png)
 /// caption
 QGroundControl homescreen
 ///
 
-![QGC](assets/Picture8.png)
+![QGC](../assets/Picture8.png)
 /// caption
 Firemware page
 ///
@@ -36,7 +36,7 @@ Callibrate your transmitter.
 * Set up the controls of transmitter for flying mode and arm and unarmed
 * In QGroundControl, open Vehicle **Configuration–▸ Flight Modes**
 
-![QGC](assets/Picture9.png)
+![QGC](../assets/Picture9.png)
 /// caption
 Correct flight mode settings
 ///
@@ -64,6 +64,11 @@ Correct flight mode settings
 ## 5. Power
 
 Need to put in the right values depending on what power module you are using.
+
+PixracerPro QGroundControl Power setting:
+
+- Voltage Divider: 18.182
+- Amperes per Volt: 36.364
 
 ## 6. Actuators
 
