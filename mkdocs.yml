@@ -73,5 +73,6 @@ nav:
     - ROS2: software/ros2.md
     - Gazebo: software/gazebo.md
     - Raspberry Pi: software/raspberry_pi.md
+    - Ollama: software/ollama.md
   - Potential Revisions: potential_revisions.md
   - MAGICC Lab: https://byu-magicc.github.io/
