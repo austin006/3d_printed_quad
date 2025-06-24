@@ -1,5 +1,29 @@
-# Byte-compiled / optimized / DLL files
+# Ignore cloned packages
+px4_msgs/
+px4_msgs_old/
+translation_node/
+
+# Ignore build and install folders
+build/
+install/
+log/
+.devenv/
+.colcon_workspace
+.vscode/
+
+# Ignore Python cache files
 __pycache__/
+*.pyc
+*.pyo
+
+# Ignore other common files
+*.swp
+*.swo
+*.swn
+*~
+
+# Byte-compiled / optimized / DLL files
+#__pycache__/
 *.py[cod]
 *$py.class
 

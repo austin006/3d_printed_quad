@@ -1,0 +1,102 @@
+# Multi-Quadcopter Control with PX4 and ROS2
+
+This directory is designed to be the **src** directory for a ROS2 workspace. Each subdirectory is a seperate package with different purposes. 
+
+An overview of each package is provided as well as instructions for setting up your environment.
+
+## px4_offboard
+
+Much of the intial code is based off work from: 
+- Jaeyoung Lim's Offboard example [https://github.com/Jaeyoung-Lim/px4-offboard](https://github.com/Jaeyoung-Lim/px4-offboard)
+- ARK Electronics' example [https://github.com/ARK-Electronics/ROS2_PX4_Offboard_Example](https://github.com/ARK-Electronics/ROS2_PX4_Offboard_Example)
+
+I've used their examples to expand other functionalities such as multi-agent control. It may be helpful to start with their examples first.
+
+Explanation of launch files
+
+- circle.launch
+- square.launch
+- waypoint.launch
+- HITL_offboard_velocity_control.launch
+- multi_waypoint_swarm.launch
+- offboard_velocity_control.launch
+- swarm_control.launch
+
+## Set-up
+
+### Install PX4 Autopilot
+To [Install PX4](https://docs.px4.io/main/en/dev_setup/dev_env_linux_ubuntu.html#simulation-and-nuttx-pixhawk-targets) run this code 
+```
+git clone https://github.com/PX4/PX4-Autopilot.git --recursive -b release/1.15
+```
+
+Run this script in a bash shell to install everything
+
+```
+bash ./PX4-Autopilot/Tools/setup/ubuntu.sh
+```
+
+You will now need to restart your computer before continuing
+
+### Install ROS2 Jazzy
+To install ROS2 Jazzy follow the steps [here](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debians.html)
+
+### Install Dependencies
+
+Install Python dependencies as mentioned in the [PX4 Docs](https://docs.px4.io/main/en/ros/ros2_comm.html#install-ros-2) with this code
+
+```
+pip3 install --user -U empy pyros-genmsg setuptools
+```
+
+### Build Micro DDS
+As mentioned in the [PX4 Docs](https://docs.px4.io/main/en/ros/ros2_comm.html#setup-micro-xrce-dds-agent-client) run this code in order to build MicroDDS on your machine
+
+```
+git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
+cd Micro-XRCE-DDS-Agent
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig /usr/local/lib/
+```
+
+### Clone in Repo and Packages
+Run this code to clone the repo
+
+```
+git clone https://github.com/austin006/3d_printed_quad.git
+```
+
+We need the px4_msgs package. Our ROS2 nodes rely on the message definitions in this package in order to communicate with PX4. Read [here](https://docs.px4.io/main/en/ros/ros2_comm.html#overview:~:text=ROS%202%20applications,different%20PX4%20releases) for more information.
+
+Be sure you're in the src directory of the workspace and run this code to clone in the px4_msgs repo
+
+```
+cd src
+git clone https://github.com/PX4/px4_msgs.git -b release/1.15
+```
+
+I couldn't get this to work in jazzy without also including [px4_msgs_old](https://docs.px4.io/main/en/middleware/uorb.html#message-versioning) and the [translation_node](https://docs.px4.io/main/en/ros2/px4_ros2_msg_translation_node.html) packages. To copy these packages, make sure you are in your workspace directory and have installed PX4-Autopilot in your root directory. Run the following code
+
+```
+~/PX4-Autopilot/Tools/copy_to_ros_ws.sh .
+```
+
+Clone in all required packages before building the workspace
+
+### Build the Workspace
+
+Source the ROS2 installation, build the workspace within the workspace directory (not in src), and source the workspace
+
+```
+source /opt/ros/jazzy/setup.bash
+colcon build
+source install/setup.bash
+```
+
+### Running the code
+
+Follow the instructions for each package to run the code

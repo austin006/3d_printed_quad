@@ -1,1 +1,0 @@
-# Multi-Quadcopter Control with PX4 and ROS2
