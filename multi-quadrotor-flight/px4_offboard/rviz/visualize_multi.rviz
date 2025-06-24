@@ -1,0 +1,615 @@
+Panels:
+  - Class: rviz_common/Displays
+    Help Height: 78
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /Status1
+        # Expanded sections for new displays
+        - /Vehicle 1 Pose1
+        - /Vehicle 1 Path1
+        - /Setpoint 1 Path1
+        - /Vehicle 1 Velocity1
+        - /Vehicle 2 Pose1
+        - /Vehicle 2 Path1
+        - /Setpoint 2 Path1
+        - /Vehicle 2 Velocity1
+        - /Vehicle 3 Pose1
+        - /Vehicle 3 Path1
+        - /Setpoint 3 Path1
+        - /Vehicle 3 Velocity1
+        - /Vehicle 4 Pose1
+        - /Vehicle 4 Path1
+        - /Setpoint 4 Path1
+        - /Vehicle 4 Velocity1
+        - /Vehicle 5 Pose1
+        - /Vehicle 5 Path1
+        - /Setpoint 5 Path1
+        - /Vehicle 5 Velocity1
+        - /Vehicle 6 Pose1 # Added for Vehicle 6
+        - /Vehicle 6 Path1 # Added for Vehicle 6
+        - /Setpoint 6 Path1 # Added for Vehicle 6
+        - /Vehicle 6 Velocity1 # Added for Vehicle 6
+      Splitter Ratio: 0.5
+    Tree Height: 907
+  - Class: rviz_common/Selection
+    Name: Selection
+  - Class: rviz_common/Tool Properties
+    Expanded:
+      - /2D Goal Pose1
+      - /Publish Point1
+    Name: Tool Properties
+    Splitter Ratio: 0.5886790156364441
+  - Class: rviz_common/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz_default_plugins/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: <Fixed Frame>
+      Value: true
+    
+    # --- Displays for Vehicle 1 ---
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz_default_plugins/Pose
+      Color: 255; 0; 0 # Red
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Vehicle 1 Pose
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Axes
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_1/pose
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1000 # Increased buffer length for longer paths
+      Class: rviz_default_plugins/Path
+      Color: 255; 0; 0 # Red
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.05 # Thicker line for visibility
+      Name: Vehicle 1 Path
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_1/path
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1000 # Increased buffer length
+      Class: rviz_default_plugins/Path
+      Color: 0; 255; 255 # Cyan
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.03 # Thinner line for setpoint path
+      Name: Setpoint 1 Path
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_1/setpoint_path
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Vehicle 1 Velocity
+      Namespaces:
+        velocity_arrow_1: true # Specific namespace for this drone's velocity arrow
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_1/velocity
+      Value: true
+
+    # --- Displays for Vehicle 2 ---
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz_default_plugins/Pose
+      Color: 0; 255; 0 # Green
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Vehicle 2 Pose
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Axes
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_2/pose
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1000
+      Class: rviz_default_plugins/Path
+      Color: 0; 255; 0 # Green
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.05
+      Name: Vehicle 2 Path
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_2/path
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1000
+      Class: rviz_default_plugins/Path
+      Color: 255; 0; 255 # Magenta
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.03
+      Name: Setpoint 2 Path
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_2/setpoint_path
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Vehicle 2 Velocity
+      Namespaces:
+        velocity_arrow_2: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_2/velocity
+      Value: true
+
+    # --- Displays for Vehicle 3 ---
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz_default_plugins/Pose
+      Color: 0; 0; 255 # Blue
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Vehicle 3 Pose
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Axes
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_3/pose
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1000
+      Class: rviz_default_plugins/Path
+      Color: 0; 0; 255 # Blue
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.05
+      Name: Vehicle 3 Path
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_3/path
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1000
+      Class: rviz_default_plugins/Path
+      Color: 255; 255; 0 # Yellow
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.03
+      Name: Setpoint 3 Path
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_3/setpoint_path
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Vehicle 3 Velocity
+      Namespaces:
+        velocity_arrow_3: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_3/velocity
+      Value: true
+
+    # --- Displays for Vehicle 4 ---
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz_default_plugins/Pose
+      Color: 255; 165; 0 # Orange
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Vehicle 4 Pose
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Axes
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_4/pose
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1000
+      Class: rviz_default_plugins/Path
+      Color: 255; 165; 0 # Orange
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.05
+      Name: Vehicle 4 Path
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_4/path
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1000
+      Class: rviz_default_plugins/Path
+      Color: 128; 0; 128 # Purple
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.03
+      Name: Setpoint 4 Path
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_4/setpoint_path
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Vehicle 4 Velocity
+      Namespaces:
+        velocity_arrow_4: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_4/velocity
+      Value: true
+
+    # --- Displays for Vehicle 5 ---
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz_default_plugins/Pose
+      Color: 255; 192; 203 # Pink
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Vehicle 5 Pose
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Axes
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_5/pose
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1000
+      Class: rviz_default_plugins/Path
+      Color: 255; 192; 203 # Pink
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.05
+      Name: Vehicle 5 Path
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_5/path
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1000
+      Class: rviz_default_plugins/Path
+      Color: 50; 205; 50 # Lime Green
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.03
+      Name: Setpoint 5 Path
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_5/setpoint_path
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Vehicle 5 Velocity
+      Namespaces:
+        velocity_arrow_5: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_5/velocity
+      Value: true
+
+    # --- Displays for Vehicle 6 (NEW DRONE) ---
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz_default_plugins/Pose
+      Color: 255; 255; 0 # Yellow (distinct color)
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Vehicle 6 Pose
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Axes
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_6/pose
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1000
+      Class: rviz_default_plugins/Path
+      Color: 255; 255; 0 # Yellow
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.05
+      Name: Vehicle 6 Path
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_6/path
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1000
+      Class: rviz_default_plugins/Path
+      Color: 0; 255; 128 # Spring Green (distinct color for setpoint)
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.03
+      Name: Setpoint 6 Path
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_6/setpoint_path
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Vehicle 6 Velocity
+      Namespaces:
+        velocity_arrow_6: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_6/velocity
+      Value: true
+
+
+    # Original displays (might be redundant now but kept for reference)
+    # They should probably be disabled or removed, as individual vehicle displays are added.
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz_default_plugins/Pose
+      Color: 255; 25; 0
+      Enabled: false # Disabled, replaced by vehicle-specific poses
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Pose
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Axes
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_pose
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: false # Disabled, replaced by vehicle-specific markers
+      Name: Marker
+      Namespaces:
+        arrow: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_velocity
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz_default_plugins/Path
+      Color: 25; 255; 0
+      Enabled: false # Disabled, replaced by vehicle-specific paths
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/vehicle_path
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz_default_plugins/Path
+      Color: 25; 0; 255
+      Enabled: false # Disabled, replaced by vehicle-specific setpoint paths
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /px4_visualizer/setpoint_path
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 255; 255; 255
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+      Hide Inactive Objects: true
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+      Line color: 128; 128; 0
+    - Class: rviz_default_plugins/SetInitialPose
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /initialpose
+    - Class: rviz_default_plugins/SetGoal
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /goal_pose
+    - Class: rviz_default_plugins/PublishPoint
+      Single click: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /clicked_point
+  Transformation:
+    Current:
+      Class: rviz_default_plugins/TF
+  Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 24.51659393310547
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.795397937297821
+      Target Frame: <Fixed Frame>
+      Value: Orbit (rviz)
+      Yaw: 0.6553981304168701
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: true
+  Height: 1136
+  Hide Left Dock: true
+  Hide Right Dock: true
+  QMainWindow State: 000000ff00000000fd00000004000000000000028e00000416fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073000000003d00000416000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f000002f4fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d000002f4000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004420000003efc0100000002fb0000000800540069006d00650100000000000004420000000000000000fb0000000800540069006d006501000000000000045000000000000000000000039c0000041600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Selection:
+    collapsed: false
+  Tool Properties:
+    collapsed: false
+  Views:
+    collapsed: true
+  Width: 924
+  X: 72
+  Y: 27

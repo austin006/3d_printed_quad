@@ -1,0 +1,31 @@
+# Waypoints for multiple drones
+# Each element in the list corresponds to a drone's waypoint mission.
+# Waypoints are defined as [x, y, z] coordinates in ENU (East, North, Up).
+
+drone_waypoints:
+  - # Waypoints for Drone 1 (vehicle_id='1'): Letter 'B'
+    - [0.0, 0.0, 10.0]
+    - [0.0, 10.0, 10.0]
+    - [7.5, 10.0, 10.0]
+    - [7.5, 5.0, 10.0]
+    - [0.0, 5.0, 10.0]
+    - [10, 5.0, 10.0]
+    - [10, 0.0, 10.0]
+
+  - # Waypoints for Drone 2 (vehicle_id='2'): Letter 'Y'
+    - [10,10,15]
+    - [15,5,15]
+    - [15,0,15]
+    - [15,5,15]
+    - [20,10,15]
+    # Reverse path to start
+    - [15,5,15]
+
+  - # Waypoints for Drone 3 (vehicle_id='3'): Letter 'U'
+    - [20,10,10]
+    - [20,0,10]
+    - [30,0,10]
+    - [30,10,10]
+    # Reverse path to start
+    - [30,0,10]
+    - [20,0,10]
