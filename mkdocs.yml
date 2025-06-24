@@ -1,6 +1,6 @@
 site_name: 3D Printed Quadrotors
 site_description:  Multi-agent quadrotors flying in formation using ROS2 
-site_url: https://austin006.github.io/3d_printed_quad
+site_url: https://austin006.github.io/3d_printed_quad/
 site_author: Austin McGlashan and Leon Weng
 
 theme:
@@ -22,14 +22,6 @@ theme:
     - content.code.select
 
   palette:
-    # Dark Mode
-    - scheme: slate
-      toggle:
-        icon: material/weather-night
-        name: Switch to light mode
-      primary: blue grey
-      accent: deep orange
-
     # Light Mode
     - scheme: default
       toggle:
@@ -37,6 +29,14 @@ theme:
         name: Switch to dark mode
       primary: blue
       accent: pink
+
+    # Dark Mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+      primary: blue grey
+      accent: deep orange
 
 markdown_extensions:
 - attr_list

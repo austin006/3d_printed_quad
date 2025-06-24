@@ -1,6 +1,8 @@
 # 3D Printed Quadrotors 
 Multi-agent quadrotors flying in formation using ROS2
 
+Documentation: [https://austin006.github.io/3d_printed_quad/](https://austin006.github.io/3d_printed_quad/)
+
 ## Editing the documentation
 
 The documentation was built using [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/)
