@@ -12,6 +12,6 @@ pip install mkdocs-material
 mkdocs serve 
 ```
 
-See the site being hosted at [http://localhost:8000](http://localhost:8000) in your web browser.
+The site is now hosted locally at [http://localhost:8000](http://localhost:8000) in your web browser.
 
 For more help see [Getting Started with Material for MkDocs](https://jameswillett.dev/getting-started-with-material-for-mkdocs/)
