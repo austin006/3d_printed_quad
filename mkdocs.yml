@@ -2,6 +2,8 @@ site_name: 3D Printed Quadrotors
 site_description:  Multi-agent quadrotors flying in formation using ROS2 
 site_url: https://austin006.github.io/3d_printed_quad/
 site_author: Austin McGlashan and Leon Weng
+repo_url: https://github.com/austin006/3d_printed_quad
+repo_name: 3d_printed_quad
 
 theme:
   name: material
@@ -73,6 +75,6 @@ nav:
     - ROS2: software/ros2.md
     - Gazebo: software/gazebo.md
     - Raspberry Pi: software/raspberry_pi.md
-    - Ollama: software/ollama.md
+    - LLMs: software/LLMs.md
   - Potential Revisions: potential_revisions.md
   - MAGICC Lab: https://byu-magicc.github.io/

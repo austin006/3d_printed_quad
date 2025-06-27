@@ -10,7 +10,7 @@ Much of the intial code is based off work from:
 - Jaeyoung Lim's Offboard example [https://github.com/Jaeyoung-Lim/px4-offboard](https://github.com/Jaeyoung-Lim/px4-offboard)
 - ARK Electronics' example [https://github.com/ARK-Electronics/ROS2_PX4_Offboard_Example](https://github.com/ARK-Electronics/ROS2_PX4_Offboard_Example)
 
-I've used their examples to expand other functionalities such as multi-agent control. It may be helpful to start with their examples first.
+I've used their examples to expand functionalities such as multi-agent control. It may be helpful to start with their examples first.
 
 Explanation of launch files
 

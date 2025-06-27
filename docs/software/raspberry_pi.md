@@ -107,7 +107,9 @@ Here are some other options if you don’t have a Linux environment:
 - Distrobox with Docker or Podman 
 - Docker container in WSL 
 
-On my Windows laptop, I used Distrobox with Podman in my WSL with mirrored network mode enambled. This worked for me. To do this, first [install Linux on Windows with WSL](https://learn.microsoft.com/en-us/windows/wsl/install). Then navigate to the **Installation** section in the [Distrobox documentation](https://distrobox.it/) and follow the given steps. 
+On my Windows laptop, I used Distrobox with Podman in my WSL with mirrored network mode enabled. This worked for me. 
+
+To do this, first [install Linux on Windows with WSL](https://learn.microsoft.com/en-us/windows/wsl/install) and turn on [mirrored network mode](https://learn.microsoft.com/en-us/windows/wsl/networking#mirrored-mode-networking). Then navigate to the **Installation** section in the [Distrobox documentation](https://distrobox.it/#installation) and follow the given steps to install Distrobox. 
 
 ## Send ROS Commands from RPi to PX4 
 
@@ -117,14 +119,7 @@ Use the following guide to set up the RPi as a companion computer to Pixhawk:
 
 This can easily be adapted for other flight controllers running PX4. 
 
-### Tips 
-
-It will be very helpful to install a terminal multiplexer on the RPi. Use the following commands to install tmux: 
-```
-sudo apt update  
-sudo apt install tmux 
-```
-For quick reference, use this [tmux cheatsheet](https://snapcraft.io/install/tmux/raspbian). If you're completely new with tmux, check out [A Quick and Easy Guide to tmux](https://hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/). 
+### Tips/Quick Reference
 
 Don’t forget to source the ROS 2 environment: 
 ```
@@ -137,7 +132,7 @@ Check status of client:
 uxrce_dds_client status 
 ```
 
-If the client has not started for PX4, you can start it manually: 
+If the client has not started for PX4, you can start it manually (in the PX4 terminal): 
 ```
 uxrce_dds_client start -t serial -d /dev/ttyS3 -b 921600 
 ```
@@ -156,6 +151,15 @@ To source mavlink virtual environment:
 ```
 source ~/mavproxy_venv/bin/activate 
 ```
+
+## Terminal Multiplexer - tmux
+
+It is very helpful to install a terminal multiplexer on the RPi. Use the following commands to install tmux: 
+```
+sudo apt update  
+sudo apt install tmux 
+```
+For quick reference, use this [tmux cheatsheet](https://snapcraft.io/install/tmux/raspbian). If you're completely new with tmux, check out [A Quick and Easy Guide to tmux](https://hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/). 
 
 ## Cross Compiling 
 

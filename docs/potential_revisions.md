@@ -2,6 +2,7 @@
 
 ## Revisions for later
 
+* AI Agents on a companion computer
 * Wireless comms
 * Check on what WiFi antenna we have
 * Talk directly quad-to-quad?

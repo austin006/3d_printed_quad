@@ -6,6 +6,6 @@
 - Get multiple quadrotors flying in formation using ROS2
 - Implement multi-agent Jump Point Search in hardware (and simulation)
 
-## Results
+<!-- ## Results
 
-Cool video in progress...
+In progress. -->
