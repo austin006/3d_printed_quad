@@ -1,4 +1,4 @@
-# Multi-Quadcopter Control with PX4 and ROS2
+# Multi-Quadcopter Control with PX4 and ROS2 🚁
 
 This directory is designed to be the **src** directory for a ROS2 workspace. Each subdirectory is a seperate package with different purposes. 
 
@@ -12,15 +12,17 @@ Much of the intial code is based off work from:
 
 I've used their examples to expand functionalities such as multi-agent control. It may be helpful to start with their examples first.
 
-Explanation of launch files
+### Explanation of launch files
 
-- circle.launch
-- square.launch
-- waypoint.launch
-- HITL_offboard_velocity_control.launch
-- multi_waypoint_swarm.launch
-- offboard_velocity_control.launch
-- swarm_control.launch
+| Launch File | Description |
+| :--- | :--- |
+| `circle.launch` | Launch a quadrotor to fly in a circle |
+| `square.launch` | Launch a quadrotor to fly in a square |
+| `waypoint.launch` | Launch a quadrotor to fly to a set of user-supplied waypoints |
+| `HITL_offboard_velocity_control.launch` | Run on a real quadrotor for keyboard control |
+| `multi_waypoint_swarm.launch` | Launch a swarm of quadrotors to follow supplied waypoints |
+| `offboard_velocity_control.launch` | Launch a quadrotor controlled by keyboard inputs |
+| `swarm_control.launch` | Launch a swarm of quadrotors to be controlled by keyboard inputs |
 
 ## Set-up
 
@@ -95,6 +97,26 @@ Source the ROS2 installation, build the workspace within the workspace directory
 source /opt/ros/jazzy/setup.bash
 colcon build
 source install/setup.bash
+```
+
+Your directory should now look similar to the following
+
+```
+.
+├── .github
+├── docs
+├── build
+├── install
+├── log
+├── src
+│   ├── px4_offboard
+│   ├── other_ros_packages
+│   ├── px4_msgs
+│   ├── px4_msgs_old
+│   ├── translation_node
+├── .gitignore
+├── mkdocs.yml
+├── README.md
 ```
 
 ### Running the code

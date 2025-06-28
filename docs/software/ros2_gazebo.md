@@ -1,14 +1,25 @@
-# ROS 2 Bootcamp
+# ROS2 and Gazebo
 
-This page provides basics of ROS 2 and how to get started with the quadrotor
+This page links resources to learn ROS 2 basics and explains how to get started with the quadrotor
 
-## ROS 2 Basics
+## Learn ROS2
 
-## Further Learning
+There are lots of available resources for learning ROS2
 
+- [ROS 2 from Scratch](https://learning.oreilly.com/library/view/ros-2-from/9781835881408/) by Edouard Renard
+- [ROS2 Official tutorials](https://docs.ros.org/en/jazzy/Tutorials.html)
+- [MAGICC Lab tutorials](https://byu-magicc.github.io/wiki/ros2_tutorials/intro/)
+- [ROS2 Docker tutorial](https://docs.ros.org/en/jazzy/How-To-Guides/Setup-ROS-2-with-VSCode-and-Docker-Container.html)
+- [ROS2 For Beginners](https://learning.oreilly.com/videos/ros2-for-beginners/10000DIVC2022146/)
 
+## Learn Gazebo
 
-## Quadrotor ROS Set-up 
+- [MAGICC Lab tutorials](https://byu-magicc.github.io/wiki/gazebo_tutorials/overview/)
+- [Multi-Vehicle Simulation with Gazebo](https://docs.px4.io/main/en/sim_gazebo_gz/multi_vehicle_simulation.html)
+- [Gazebo Simulation](https://docs.px4.io/main/en/sim_gazebo_gz/#adding-new-worlds-and-models)
+- [ros_gz_project_template](https://github.com/gazebosim/ros_gz_project_template) (A template project integrating ROS 2 and Gazebo simulator)
+
+## Quadrotor ROS2 Set-up 
 
 The following set-up information is repeated from the README in the src directory. It explains how to set up the proper environment to use the code in this repository. See the README for explanations of each ROS2 package.
 
@@ -83,6 +94,26 @@ Source the ROS2 installation, build the workspace within the workspace directory
 source /opt/ros/jazzy/setup.bash
 colcon build
 source install/setup.bash
+```
+
+Your directory should now look similar to the following
+
+```
+.
+├── .github
+├── docs
+├── build
+├── install
+├── log
+├── src
+│   ├── px4_offboard
+│   ├── other_ros_packages
+│   ├── px4_msgs
+│   ├── px4_msgs_old
+│   ├── translation_node
+├── .gitignore
+├── mkdocs.yml
+├── README.md
 ```
 
 ### Running the code

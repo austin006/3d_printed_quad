@@ -72,7 +72,7 @@ nav:
     - Wiring: hardware/wiring.md
   - Software:
     - QGroundControl Setup: software/qgroundcontrol_setup.md
-    - ROS2: software/ros2.md
+    - ROS2 and Gazebo: software/ros2_gazebo.md
     - Gazebo: software/gazebo.md
     - Raspberry Pi: software/raspberry_pi.md
     - LLMs: software/LLMs.md
