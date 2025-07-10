@@ -3,6 +3,15 @@ px4_msgs/
 px4_msgs_old/
 translation_node/
 
+# Project specific
+*.log
+.ollama/
+ollama_models/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
 # Ignore build and install folders
 build/
 install/
@@ -23,7 +32,7 @@ __pycache__/
 *~
 
 # Byte-compiled / optimized / DLL files
-#__pycache__/
+__pycache__/
 *.py[cod]
 *$py.class
 

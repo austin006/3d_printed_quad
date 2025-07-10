@@ -1,0 +1,37 @@
+# Drone Control Agent Configuration
+
+# LLM Settings
+llm:
+  model: "llama3.2:3b"  # Ollama model name
+  base_url: "http://localhost:11434"  # Use localhost for RPi4
+  temperature: 0.0  # 0 for deterministic responses
+  num_predict: 50   # Reduced for RPi4 performance
+  
+# Drone Limits
+safety:
+  max_altitude: 50.0  # meters
+  min_altitude: 0.5   # meters
+  max_distance: 100.0 # meters from home
+  
+# Command Publishing
+publishing:
+  trajectory_repeat: 10  # Number of times to publish trajectory for takeoff
+  position_repeat: 5     # Number of times to publish position commands
+  publish_delay: 0.1     # Seconds between repeated publishes
+  
+# ROS2 Settings  
+ros2:
+  system_id: 1
+  component_id: 1
+  
+# Performance Tuning (optimized for Raspberry Pi 4)
+performance:
+  enable_status_monitoring: true  # Set false to reduce CPU usage
+  status_in_prompt: false        # Reduces token count for faster responses
+  max_response_wait: 10.0        # Seconds to wait for LLM response
+  
+# Raspberry Pi 4 Optimizations
+rpi4:
+  cpu_threads: 4              # Number of CPU threads to use
+  enable_gpu: false           # RPi4 GPU not supported for Ollama
+  reduced_memory_mode: true   # Minimize memory usage
