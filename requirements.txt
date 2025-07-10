@@ -1,3 +1,5 @@
+# requirements for the langgraph agent
+
 langgraph
 langgraph-prebuilt
 langchain-core

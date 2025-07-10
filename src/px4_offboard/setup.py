@@ -29,8 +29,8 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='Austin',
-    # maintainer_email='austin@example.com',
-    description='PX4 offboard control and multi-drone visualization.',
+    maintainer_email='austinmcglashan1@gmail.com',
+    description='PX4 offboard control and multi-drone visualization',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={

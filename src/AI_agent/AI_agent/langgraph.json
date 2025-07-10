@@ -1,8 +1,7 @@
 {
   "dockerfile_lines": [],
   "graphs": {
-    "agent": "./agent.py:graph",
-    "gemini-agent": "./gemini_agent.py:graph"
+    "agent": "./agent.py:graph"
   },
   "env": "./.env",
   "python_version": "3.11",

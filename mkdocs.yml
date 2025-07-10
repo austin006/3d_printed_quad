@@ -73,7 +73,6 @@ nav:
   - Software:
     - QGroundControl Setup: software/qgroundcontrol_setup.md
     - ROS2 and Gazebo: software/ros2_gazebo.md
-    - Gazebo: software/gazebo.md
     - Raspberry Pi: software/raspberry_pi.md
     - LLMs: software/LLMs.md
   - Potential Revisions: potential_revisions.md
