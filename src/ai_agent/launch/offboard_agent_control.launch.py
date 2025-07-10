@@ -42,7 +42,9 @@ def generate_launch_description():
         # Comment out this section if you want to use keyboard control
         ExecuteProcess(
             cmd=['gnome-terminal', '--', 'bash', '-c', 
-                 'source /opt/ros/jazzy/setup.bash && cd ~/drone_agent && python3 agent.py; exec bash'],
+                'source /opt/ros/jazzy/setup.bash && '
+                'source ~/ros2_workspaces/3d_printed_quad/install/setup.bash && '
+                'ros2 run ai_agent agent; exec bash'],
             output='screen',
             name='ai_agent'
         ),

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>AI_agent</name>
+  <name>ai_agent</name>
   <version>0.0.0</version>
   <description>AI agent and ROS2 PX4 quadrotor simulation</description>
   <maintainer email="austinmcglashan1@gmail.com">amcglash</maintainer>

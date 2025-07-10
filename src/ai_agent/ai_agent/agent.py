@@ -6,7 +6,18 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPo
 import time
 from threading import Thread
 import yaml
+import sys
 import os
+from ament_index_python.packages import get_package_share_directory
+
+# Add virtual environment to path
+agent_dir = os.path.dirname(os.path.abspath(__file__))
+venv_path = os.path.join(os.path.dirname(agent_dir), 'venv', 'lib', 'python3.12', 'site-packages')
+if os.path.exists(venv_path):
+    sys.path.insert(0, venv_path)
+    print(f"✓ Added venv to path: {venv_path}")
+else:
+    print(f"⚠ Warning: venv path not found: {venv_path}")
 
 # LangChain imports
 from langchain_core.messages import SystemMessage, HumanMessage
@@ -30,14 +41,27 @@ from px4_msgs.msg import (
 )
 
 # Import tools
-from drone_tools import create_tools
+from ai_agent.drone_tools import create_tools
 
 def load_config():
     """Load configuration from config.yaml"""
-    config_path = os.path.join(os.path.dirname(__file__), 'config.yaml')
+    # Try to get from package share first
+    try:
+        package_share_dir = get_package_share_directory('ai_agent')
+        config_path = os.path.join(package_share_dir, 'config', 'config.yaml')
+    except:
+        # Fallback for development
+        config_path = os.path.join(os.path.dirname(__file__), 'config.yaml')
+    
     if os.path.exists(config_path):
         with open(config_path, 'r') as f:
-            return yaml.safe_load(f)
+            config = yaml.safe_load(f)
+            
+        # Auto-detect if running in Docker
+        if os.path.exists('/.dockerenv'):
+            config['llm']['base_url'] = 'http://host.docker.internal:11434'
+        
+        return config
     else:
         # Default config if file doesn't exist
         return {
@@ -64,12 +88,20 @@ class DroneState(TypedDict):
     
 class DroneControlNode(Node):
     """ROS2 node that integrates with the LangGraph agent"""
-    
     def __init__(self):
         super().__init__('drone_control_agent')
         
+        # Get package share directory
+        package_share_dir = get_package_share_directory('ai_agent')
+        
         # Load configuration
-        self.config = load_config()
+        config_path = os.path.join(package_share_dir, 'config', 'config.yaml')
+        if os.path.exists(config_path):
+            with open(config_path, 'r') as f:
+                self.config = yaml.safe_load(f)
+        else:
+            # Fallback to default config
+            self.config = self.get_default_config()
         
         # QoS profile for PX4
         qos_profile = QoSProfile(
@@ -119,7 +151,8 @@ class DroneControlNode(Node):
         self.llm_with_tools = self.llm.bind_tools(self.tools)
         
         # Load system prompt
-        with open("system_prompt.txt", "r") as f:
+        system_prompt_path = os.path.join(package_share_dir, 'config', 'system_prompt.txt')
+        with open(system_prompt_path, "r") as f:
             self.system_prompt = SystemMessage(content=f.read())
         
         # Build the graph
