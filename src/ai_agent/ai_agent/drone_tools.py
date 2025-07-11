@@ -2,6 +2,7 @@
 
 import time
 from px4_msgs.msg import VehicleCommand, TrajectorySetpoint, OffboardControlMode
+from langchain_core.tools import tool 
 
 # PX4 Command constants (in case they're not imported)
 VEHICLE_CMD_COMPONENT_ARM_DISARM = 400
@@ -34,13 +35,9 @@ def create_tools(ros_node, config=None):
         """Get current timestamp in microseconds"""
         return int(time.time() * 1e6)
     
+    @tool
     def arm_drone() -> str:
-        """
-        Arms the drone motors.
-        
-        Returns:
-            str: Status message
-        """
+        """Arms the drone motors."""
         msg = VehicleCommand()
         msg.timestamp = get_timestamp()
         msg.param1 = 1.0  # 1.0 to arm
@@ -54,13 +51,9 @@ def create_tools(ros_node, config=None):
         ros_node.vehicle_command_pub.publish(msg)
         return "Arm command sent. Drone should arm within 2 seconds."
     
+    @tool
     def disarm_drone() -> str:
-        """
-        Disarms the drone motors.
-        
-        Returns:
-            str: Status message
-        """
+        """Disarms the drone motors."""
         msg = VehicleCommand()
         msg.timestamp = get_timestamp()
         msg.param1 = 0.0  # 0.0 to disarm
@@ -74,13 +67,9 @@ def create_tools(ros_node, config=None):
         ros_node.vehicle_command_pub.publish(msg)
         return "Disarm command sent. Drone should disarm immediately."
     
+    @tool
     def switch_to_offboard_mode() -> str:
-        """
-        Switches the drone to offboard control mode.
-        
-        Returns:
-            str: Status message
-        """
+        """Switches the drone to offboard control mode."""
         msg = VehicleCommand()
         msg.timestamp = get_timestamp()
         msg.param1 = 1.0
@@ -95,44 +84,63 @@ def create_tools(ros_node, config=None):
         ros_node.vehicle_command_pub.publish(msg)
         return "Switching to offboard mode."
     
+    @tool
     def takeoff(altitude: float = 2.0) -> str:
-        """
-        Commands the drone to take off to a specified altitude.
-        Must be armed first.
+        """Commands the drone to take off to a specified altitude. Must be armed first.
         
         Args:
             altitude: Target altitude in meters (default: 2.0)
-            
-        Returns:
-            str: Status message
         """
         if altitude < min_alt or altitude > max_alt:
             return f"Invalid altitude {altitude}m. Must be between {min_alt} and {max_alt} meters."
         
-        # First switch to offboard mode
+        # Create offboard control mode message
+        offboard_msg = OffboardControlMode()
+        offboard_msg.timestamp = get_timestamp()
+        offboard_msg.position = True
+        offboard_msg.velocity = False
+        offboard_msg.acceleration = False
+        
+        # Create trajectory setpoint
+        trajectory_msg = TrajectorySetpoint()
+        trajectory_msg.position = [0.0, 0.0, -altitude]  # NED frame (negative Z is up)
+        trajectory_msg.yaw = 0.0
+        
+        # First publish setpoints for 2+ seconds to establish offboard signal
+        ros_node.get_logger().info("Publishing setpoints to establish offboard signal...")
+        
+        # Publish offboard mode and setpoints for 2.5 seconds before mode switch
+        start_time = time.time()
+        while time.time() - start_time < 2.5:
+            offboard_msg.timestamp = get_timestamp()
+            trajectory_msg.timestamp = get_timestamp()
+            
+            # Publish both offboard mode and trajectory
+            if hasattr(ros_node, 'offboard_mode_pub'):
+                ros_node.offboard_mode_pub.publish(offboard_msg)
+            trajectory_msg.timestamp = get_timestamp()
+            ros_node.trajectory_pub.publish(trajectory_msg)
+            time.sleep(0.05)  # 20 Hz
+        
+        # Now switch to offboard mode
+        ros_node.get_logger().info("Switching to offboard mode...")
         switch_to_offboard_mode()
         
-        # Then send trajectory setpoint
-        msg = TrajectorySetpoint()
-        msg.timestamp = get_timestamp()
-        msg.position = [0.0, 0.0, -altitude]  # NED frame (negative Z is up)
-        msg.yaw = 0.0
-        
-        # Publish multiple times to ensure offboard mode engages
-        for _ in range(traj_repeat):
-            msg.timestamp = get_timestamp()
-            ros_node.trajectory_pub.publish(msg)
-            time.sleep(pub_delay)
+        # Continue publishing for a bit more to ensure mode switch
+        for _ in range(20):  # 1 more second
+            offboard_msg.timestamp = get_timestamp()
+            trajectory_msg.timestamp = get_timestamp()
             
-        return f"Takeoff command sent for altitude {altitude} meters."
+            if hasattr(ros_node, 'offboard_mode_pub'):
+                ros_node.offboard_mode_pub.publish(offboard_msg)
+            ros_node.trajectory_pub.publish(trajectory_msg)
+            time.sleep(0.05)
+            
+        return f"Takeoff command sent for altitude {altitude} meters. Drone should be climbing."
     
+    @tool
     def land() -> str:
-        """
-        Commands the drone to land at current position.
-        
-        Returns:
-            str: Status message
-        """
+        """Commands the drone to land at current position."""
         msg = VehicleCommand()
         msg.timestamp = get_timestamp()
         msg.command = VEHICLE_CMD_NAV_LAND
@@ -145,18 +153,14 @@ def create_tools(ros_node, config=None):
         ros_node.vehicle_command_pub.publish(msg)
         return "Land command sent. Drone will land at current position."
     
+    @tool
     def goto_position(x: float, y: float, z: float) -> str:
-        """
-        Sends the drone to a specific position.
-        Drone must be in offboard mode.
+        """Sends the drone to a specific position. Drone must be in offboard mode.
         
         Args:
             x: X coordinate in meters (North)
             y: Y coordinate in meters (East) 
             z: Z coordinate in meters (altitude above takeoff)
-            
-        Returns:
-            str: Status message
         """
         # Validate coordinates
         if abs(x) > max_dist or abs(y) > max_dist:
@@ -164,6 +168,38 @@ def create_tools(ros_node, config=None):
         if z < min_alt or z > max_alt:
             return f"Altitude must be between {min_alt} and {max_alt} meters."
         
+        # Check if we're in offboard mode, if not, establish it first
+        if ros_node.current_status['mode'] != 'OFFBOARD':
+            # Create offboard control mode message
+            offboard_msg = OffboardControlMode()
+            offboard_msg.timestamp = get_timestamp()
+            offboard_msg.position = True
+            offboard_msg.velocity = False
+            offboard_msg.acceleration = False
+            
+            # Publish setpoints to establish offboard signal
+            msg = TrajectorySetpoint()
+            msg.position = [x, y, -z]  # Convert to NED frame
+            msg.yaw = 0.0
+            
+            ros_node.get_logger().info("Establishing offboard signal before position command...")
+            
+            # Publish for 2.5 seconds to establish signal
+            start_time = time.time()
+            while time.time() - start_time < 2.5:
+                offboard_msg.timestamp = get_timestamp()
+                msg.timestamp = get_timestamp()
+                
+                if hasattr(ros_node, 'offboard_mode_pub'):
+                    ros_node.offboard_mode_pub.publish(offboard_msg)
+                ros_node.trajectory_pub.publish(msg)
+                time.sleep(0.05)
+            
+            # Switch to offboard mode
+            switch_to_offboard_mode()
+            time.sleep(0.5)
+        
+        # Now send position commands
         msg = TrajectorySetpoint()
         msg.timestamp = get_timestamp()
         msg.position = [x, y, -z]  # Convert to NED frame
@@ -177,13 +213,9 @@ def create_tools(ros_node, config=None):
             
         return f"Moving to position: x={x}m, y={y}m, z={z}m"
     
+    @tool
     def hold_position() -> str:
-        """
-        Commands the drone to hold its current position.
-        
-        Returns:
-            str: Status message
-        """
+        """Commands the drone to hold its current position."""
         # Get current position from node
         current_pos = ros_node.current_status['position']
         
@@ -195,13 +227,9 @@ def create_tools(ros_node, config=None):
         ros_node.trajectory_pub.publish(msg)
         return "Holding current position."
     
+    @tool
     def get_status() -> str:
-        """
-        Returns the current status of the drone.
-        
-        Returns:
-            str: Formatted status information
-        """
+        """Returns the current status of the drone."""
         status = ros_node.current_status
         return (f"Drone Status:\n"
                 f"- Armed: {status['armed']}\n"
@@ -211,18 +239,13 @@ def create_tools(ros_node, config=None):
                 f"y={status['position'][1]:.1f}m, z={status['position'][2]:.1f}m\n"
                 f"- Landed: {status['is_landed']}")
     
+    @tool
     def emergency_stop() -> str:
-        """
-        Emergency stop - immediately disarms the drone.
-        WARNING: This will cause the drone to fall!
-        
-        Returns:
-            str: Status message
-        """
+        """Emergency stop - immediately disarms the drone. WARNING: This will cause the drone to fall!"""
         disarm_drone()
         return "EMERGENCY STOP executed! Drone disarmed."
     
-    # Return only the essential tools
+    # Return the tools
     return [
         arm_drone,
         disarm_drone,

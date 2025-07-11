@@ -1,23 +1,14 @@
 #!/usr/bin/env python3
 
+import sys
+import os
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPolicy
 import time
 from threading import Thread
 import yaml
-import sys
-import os
 from ament_index_python.packages import get_package_share_directory
-
-# Add virtual environment to path
-agent_dir = os.path.dirname(os.path.abspath(__file__))
-venv_path = os.path.join(os.path.dirname(agent_dir), 'venv', 'lib', 'python3.12', 'site-packages')
-if os.path.exists(venv_path):
-    sys.path.insert(0, venv_path)
-    print(f"✓ Added venv to path: {venv_path}")
-else:
-    print(f"⚠ Warning: venv path not found: {venv_path}")
 
 # LangChain imports
 from langchain_core.messages import SystemMessage, HumanMessage
@@ -116,6 +107,8 @@ class DroneControlNode(Node):
             VehicleCommand, '/fmu/in/vehicle_command', qos_profile)
         self.trajectory_pub = self.create_publisher(
             TrajectorySetpoint, '/fmu/in/trajectory_setpoint', qos_profile)
+        self.offboard_mode_pub = self.create_publisher(
+            OffboardControlMode, '/fmu/in/offboard_control_mode', qos_profile)
         
         # Subscribers for status monitoring (if enabled)
         if self.config['performance']['enable_status_monitoring']:
@@ -225,13 +218,73 @@ class DroneControlNode(Node):
             }
             
             result = self.graph.invoke(initial_state)
+
+            # return result[messages"][-1].content
+
+            # Track tool calls and responses
+            tool_called = None
+            tool_response = None
             
-            # Extract the final response
-            for msg in reversed(result["messages"]):
-                if hasattr(msg, 'content') and msg.content and not hasattr(msg, 'tool_calls'):
-                    return msg.content
+            # Process messages to understand what happened
+            for msg in result["messages"]:
+                # Check for tool call messages
+                if hasattr(msg, 'tool_calls') and msg.tool_calls:
+                    # Extract tool name from tool call
+                    for tool_call in msg.tool_calls:
+                        if hasattr(tool_call, 'name'):
+                            tool_called = tool_call['name']
+                        elif isinstance(tool_call, dict) and 'name' in tool_call:
+                            tool_called = tool_call['name']
+                        else:
+                            # Try to extract from string representation
+                            tool_str = str(tool_call)
+                            if 'name=' in tool_str:
+                                tool_called = tool_str.split('name=')[1].split()[0].strip("',")
+                
+                # Check for tool response messages
+                if hasattr(msg, 'type') and msg.type == 'tool':
+                    tool_response = msg.content
+                elif hasattr(msg, 'name') and tool_called and msg.name == tool_called:
+                    tool_response = msg.content
+                
+                # Check for AI messages with tool syntax
+                if hasattr(msg, 'content') and msg.content:
+                    content = str(msg.content)
                     
-            return "Command processed successfully."
+                    # Handle raw tool syntax like <|python_tag|>arm_drone()
+                    if '<|python_tag|>' in content:
+                        # Extract tool name from syntax
+                        import re
+                        tool_match = re.search(r'<\|python_tag\|>(\w+)\(', content)
+                        if tool_match:
+                            tool_called = tool_match.group(1)
+                    
+                    # If this is a clean AI message (no tool calls), return it
+                    elif not hasattr(msg, 'tool_calls') and '<|' not in content:
+                        # This is likely the final AI response
+                        if tool_called and tool_response:
+                            # If we had a tool call, include that info
+                            return f"Called {tool_called}. {tool_response}"
+                        else:
+                            return content
+            
+            # Build response based on what we found
+            if tool_called and tool_response:
+                # Format tool name nicely
+                tool_display = tool_called.replace('_', ' ').title()
+                return f"Executed command {tool_display}\nTool: {tool_response}"
+            elif tool_called:
+                tool_display = tool_called.replace('_', ' ').title()
+                return f"Executing command {tool_display}"
+            else:
+                # Fallback to looking for any response
+                for msg in reversed(result["messages"]):
+                    if hasattr(msg, 'content') and msg.content:
+                        content = str(msg.content)
+                        if '<|python_tag|>' not in content:
+                            return content
+                
+                return "Command processed."
             
         except Exception as e:
             self.get_logger().error(f"Error processing command: {e}")
@@ -255,7 +308,7 @@ def main():
     
     try:
         while True:
-            command = input("\nEnter command: ")
+            command = input("\nUser: ")
             if command.lower() == 'exit':
                 break
                 

@@ -2,7 +2,6 @@
 
 """
 Launch file to integrate the AI agent with existing PX4 simulation
-This can be run alongside or instead of the velocity control example
 """
 
 from launch import LaunchDescription
@@ -30,47 +29,21 @@ def generate_launch_description():
             prefix='gnome-terminal --'
         ),
         
-        # Visualizer for RViz
+        # Run the AI agent
         Node(
-            package='px4_offboard',
-            namespace='px4_offboard',
-            executable='visualizer',
-            name='visualizer'
-        ),
-        
-        # Option 1: Run ONLY the AI agent (without keyboard control)
-        # Comment out this section if you want to use keyboard control
-        ExecuteProcess(
-            cmd=['gnome-terminal', '--', 'bash', '-c', 
-                'source /opt/ros/jazzy/setup.bash && '
-                'source ~/ros2_workspaces/3d_printed_quad/install/setup.bash && '
-                'ros2 run ai_agent agent; exec bash'],
-            output='screen',
-            name='ai_agent'
-        ),
-        
-        # Option 2: Run BOTH keyboard control and AI agent
-        # Uncomment these to have both control options available
-        # Node(
-        #     package='px4_offboard',
-        #     namespace='px4_offboard',
-        #     executable='control',
-        #     name='control',
-        #     prefix='gnome-terminal --',
-        # ),
-        # Node(
-        #     package='px4_offboard',
-        #     namespace='px4_offboard',
-        #     executable='velocity_control',
-        #     name='velocity'
-        # ),
-        
-        # RViz2 for visualization
-        Node(
-            package='rviz2',
-            namespace='',
-            executable='rviz2',
-            name='rviz2',
-            # arguments=['-d', [os.path.join(package_dir, 'visualize.rviz')]]
+            package='ai_agent',
+            namespace='ai_agent',
+            executable='agent',
+            name='agent',
+            prefix='gnome-terminal --'
         )
+
+        # ExecuteProcess(
+        #     cmd=['gnome-terminal', '--', 'bash', '-c', 
+        #         'source /opt/ros/jazzy/setup.bash && '
+        #         'source ~/ros2_workspaces/3d_printed_quad/install/setup.bash && '
+        #         'ros2 run ai_agent agent; exec bash'],
+        #     output='screen',
+        #     name='ai_agent'
+        # )
     ])
