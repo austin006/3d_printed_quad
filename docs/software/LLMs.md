@@ -6,6 +6,59 @@ Ollama is a framework that simplifies running large language models (LLMs) local
 
 Download [ollama](https://ollama.com/download) and see the [quickstart docs](https://github.com/ollama/ollama/blob/main/README.md#quickstart) for basic commands
 
+### Key Commands
+
+```
+ollama run <model name>
+ollama rm <model name>
+ollama ls
+ollama ps
+ollama stop
+ollama show
+```
+
+## Architecture Overview
+
+The agent is designed to work alongside your existing PX4 simulation infrastructure:
+
+``` mermaid
+graph TB 
+    subgraph "Terminal 1" 
+        PROC[processes.py] --> MICRO[MicroXRCEAgent<br/>UDP 8888] 
+        PROC --> GAZ[Gazebo PX4 SITL] 
+    end 
+    subgraph "Terminal 2 (Optional)" 
+        CTRL[control.py<br/>Keyboard Input] 
+    end 
+    subgraph "Terminal 3" 
+        OLLAMA[Ollama Server<br/>LLM Service] 
+    end 
+    subgraph "Terminal 4" 
+        USER[User Commands<br/>Natural Language] --> AGENT[agent.py<br/>LangGraph] 
+        AGENT --> |LLM Queries| OLLAMA 
+        OLLAMA --> |Tool Selection| AGENT 
+    end 
+    subgraph "ROS2 Nodes" 
+        CTRL --> |/offboard_velocity_cmd| VEL[velocity_control.py] 
+        VEL --> |State Machine| OFF[Offboard Mode] 
+        OFF --> |/fmu/in/trajectory_setpoint| MICRO 
+        AGENT --> |Direct Commands| TOOLS[drone_tools.py] 
+        TOOLS --> |/fmu/in/vehicle_command| MICRO 
+        TOOLS --> |/fmu/in/trajectory_setpoint| MICRO 
+    end 
+    subgraph "Visualization" 
+        VIZ[visualizer.py] --> RVIZ[RViz2] 
+    end 
+
+    MICRO <--> GAZ 
+    GAZ --> |/fmu/out/*| VIZ 
+    GAZ --> |/fmu/out/*| AGENT 
+
+    style AGENT fill:#f9f,stroke:#333,stroke-width:4px 
+    style TOOLS fill:#f9f,stroke:#333,stroke-width:4px 
+    style OLLAMA fill:#f9f,stroke:#333,stroke-width:4px  
+```
+
 ## Gemma 3
 
 See the [Gemma3](https://ollama.com/library/gemma3) models available with Ollama.

@@ -8,14 +8,14 @@ The following documentation gives a detailed walk through on how to set up a new
 - password: magicc 
 - hostname: raspberrypi.local 
 - ssh command with custom username:
-```
-ssh magicc@<IP address>
-```
+    ```
+    ssh magicc@<IP address>
+    ```
 - wifi: MAGICC
 - Dynamic IP address: 192.168.1.12 
-```
-ssh magicc@192.168.1.12 
-```
+    ```
+    ssh magicc@192.168.1.12 
+    ```
 
 ## Set Up the Raspberry Pi  
 
@@ -59,18 +59,18 @@ We will use a computer to remotely ssh into the RPi over Wi-Fi.
 
 - Make sure the RPi is powered on and connected to the same network as your computer.
 - From your own machine, run: 
-```
-ping raspberrypi.local 
-```
+    ```
+    ping raspberrypi.local 
+    ```
 - Once you’ve found the IP address of the Pi, then run: 
-```
-ssh pi@<IP_ADDRESS> 
-```
+    ```
+    ssh pi@<IP_ADDRESS> 
+    ```
 - The default password is **raspberry**  
 - If you set a custom user and password using Raspberry Pi Imager, you will instead run the following and enter your password when prompted. 
-```
-ssh <user>@<IP_ADDRESS> 
-```
+    ```
+    ssh <user>@<IP_ADDRESS> 
+    ```
 
 ### 4. Install ROS2-jazzy on the RPi
 
@@ -80,14 +80,14 @@ Follow the documentation to install ROS2 on Ubuntu: [Ubuntu (deb packages) — R
     You probably don’t need all the GUI tools on the RPi that come with the Desktop install and you can just perform the ROS-Base install. 
 
 - Test if ROS is working by running the following in the RPi ssh terminal. 
-```
-ros2 -h
-```
+    ```
+    ros2 -h
+    ```
 - Don’t forget to add the following lines to your bash file to source your environment. Doing this will automatically source the environment every time you open a new terminal: 
-```
-source /opt/ros/jazzy/setup.bash 
-source install/setup.bash 
-```
+    ```
+    source /opt/ros/jazzy/setup.bash 
+    source install/setup.bash 
+    ```
 
 ## ROS Communication Between RPi and Computer  
 
@@ -161,6 +161,14 @@ sudo apt install tmux
 ```
 For quick reference, use this [tmux cheatsheet](https://snapcraft.io/install/tmux/raspbian). If you're completely new with tmux, check out [A Quick and Easy Guide to tmux](https://hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/). 
 
+### Key Commands
+
+- Create a new session: `tmux new-s <session name>`
+- Detach from a session: `Ctrl+b d`
+- List available sessions: `tmux ls`
+- Enter an existing session: `tmux attach -t <session name>`
+- End a current session: `tmux kill-session -t <session name>`
+
 ## Cross Compiling 
 
 It can be beneficial to set up cross compiling on a computer so that you don’t have to wait hours for code to compile on the Raspberry Pi. For reference, it took 30 minutes to build the ROS package px4_msgs on the RPi but on a computer it takes 1-3 minutes. 
@@ -170,6 +178,8 @@ The [cross_compile](https://docs.ros.org/en/jazzy/How-To-Guides/Cross-compilatio
 Check out this [possible alternative](https://discourse.ros.org/t/call-for-help-maintainership-of-the-ros-cross-compile-tool/26511/5) 
 
 ## Extra Guides 
+
+Check the temperature of the RPi: `watch -- 'vcgencmd measure_temp`
 
 Guide for setting up RPi as a companion computer.
 [Link](https://docs.px4.io/main/en/companion_computer/pixhawk_rpi.html)

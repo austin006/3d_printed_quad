@@ -9,38 +9,11 @@ An optimized AI agent for controlling quadcopters using natural language command
 - **Simulation**: PX4 SITL with Gazebo
 - **DDS Bridge**: MicroXRCEAgent
 
-## Key Design Decisions
-
-### 1. **ROS2 Publishers vs Terminal Commands**
-- **Choice**: ROS2 Publishers
-- **Reason**: More efficient, better control, and proper integration with ROS2 ecosystem
-- Terminal commands have overhead from process spawning and string parsing
-
-### 2. **Simplified Agent Architecture**
-- Removed unnecessary state updates between tool calls
-- Minimal state tracking (only messages)
-- Direct tool execution without intermediate processing
-- Status monitoring through ROS2 subscriptions (asynchronous)
-
-### 3. **Optimized LLM Configuration**
-- Limited response length (`num_predict=100`)
-- Temperature set to 0 for deterministic responses
-- Concise system prompt focused on essential information
-- Reduced tool count (only drone-specific tools)
-
-### 4. **Efficient Tool Design**
-- Tools return immediately after publishing commands
-- No blocking waits for command completion
-- Batch publishing for reliability (trajectory setpoints)
-- Input validation to prevent errors
-
 ## Installation
 
 1. **Prerequisites**
-   ```bash
-   # ROS2 Jazzy and PX4 dependencies
-   sudo apt update
-   sudo apt install ros-jazzy-desktop python3-colcon-common-extensions
+   ```bash 
+   # Complete set-up for px4_offboard package  
    
    # Install Ollama
    curl -fsSL https://ollama.com/install.sh | sh
@@ -49,30 +22,33 @@ An optimized AI agent for controlling quadcopters using natural language command
    ollama pull llama3.2:3b
    ```
 
-2. **Python Dependencies**
+2. **Python Dependencies** - use a python virtual environment
    ```bash
-   pip install -r requirements.txt
+   # Navigate to your AI_agent package
+   cd ~/3d_printed_quad/src/AI_agent
+
+   # Create a virtual environment
+   python3 -m venv venv
+
+   # Activate it
+   source venv/bin/activate
+
+   # Install dependencies
+   pip install langgraph langgraph-prebuilt langchain-core langchain_ollama 
    ```
 
-3. **Build PX4 and px4_msgs**
-   ```bash
-   # Clone and build PX4-Autopilot if not already done
-   cd ~
-   git clone https://github.com/PX4/PX4-Autopilot.git --recursive
-   cd PX4-Autopilot
-   make px4_sitl gz_x500
-   
-   # Build px4_msgs
-   cd ~/your_ws/src
-   git clone https://github.com/PX4/px4_msgs.git
-   cd ..
-   colcon build --packages-select px4_msgs
-   source install/setup.bash
+3. **Test the Agent**
+   ```
+   cd ~/ros2_workspaces/3d_printed_quad/src/ai_agent
+   source venv/bin/activate
+   source ~/ros2_workspaces/3d_printed_quad/install/setup.bash
+   export PYTHONPATH=$PYTHONPATH:~/ros2_workspaces/3d_printed_quad/src/ai_agent
+   python3 ai_agent/agent.py
    ```
 
 ## Usage with Simulation
 
-### Option 1: Run AI Agent with Existing Launch File
+### Option 1: Run AI Agent with Gazebo Simulation
 
 1. **Start Ollama** (terminal 1)
    ```bash
@@ -81,31 +57,20 @@ An optimized AI agent for controlling quadcopters using natural language command
 
 2. **Use Modified Launch File** (terminal 2)
    ```bash
-   # Copy the launch file to your workspace
-   cp offboard_agent_control.launch.py ~/your_ws/src/px4_offboard/launch/
-   
-   # Run the integrated launch
-   ros2 launch px4_offboard offboard_agent_control.launch.py
+   # Use the launch file
+   ros2 launch ai_agent offboard_agent_control.launch.py
    ```
 
 ### Option 2: Run AI Agent Separately
 
-1. **Start your existing simulation** (terminal 1)
-   ```bash
-   ros2 launch px4_offboard offboard_velocity_control.launch.py
-   ```
-
-2. **Start Ollama** (terminal 2)
+1. **Start Ollama** (terminal 2)
    ```bash
    ollama serve
    ```
 
-3. **Run the AI agent** (terminal 3)
+2. **Run the AI agent** (terminal 3)
    ```bash
-   cd ~/drone_agent
-   source /opt/ros/jazzy/setup.bash
-   source ~/your_ws/install/setup.bash  # For px4_msgs
-   python3 agent.py
+   ros2 launch ai_agent test_agent.launch.py
    ```
 
 ### Option 3: Manual Setup
@@ -117,13 +82,17 @@ An optimized AI agent for controlling quadcopters using natural language command
 
 2. **Start PX4 SITL** (terminal 2)
    ```bash
-   cd ~/PX4-Autopilot
-   make px4_sitl gz_x500
+   cd ~/PX4-Autopilot && make px4_sitl gz_x500
    ```
 
-3. **Start Ollama** (terminal 3)
+3. **Start Ollama**
    ```bash
    ollama serve
+   ```
+
+4. **Start QGroundControl** (terminal 3)
+   ```
+   cd ~/QGroundControl && ./QGroundControl.AppImage
    ```
 
 4. **Launch the Agent** (terminal 4)
@@ -154,50 +123,6 @@ An optimized AI agent for controlling quadcopters using natural language command
 "Fly in a square pattern at 5 meters altitude"
 ```
 
-## Performance Optimizations
-
-1. **Reduced Latency**
-   - Direct ROS2 publishing (no subprocess overhead)
-   - Minimal state management
-   - Short LLM responses
-   - No unnecessary tool calls
-
-2. **Resource Efficiency**
-   - Lightweight state tracking
-   - Asynchronous status monitoring
-   - No polling or busy-waiting
-   - Efficient message serialization
-
-3. **Reliability**
-   - Multiple publishes for critical commands
-   - Input validation in tools
-   - Clear error messages
-   - Status feedback integration
-
-## Architecture Overview
-
-The agent is designed to work alongside your existing PX4 simulation infrastructure:
-
-```
-User Input → LangGraph Agent → LLM → Tool Selection → ROS2 Publishers → MicroXRCEAgent → PX4
-     ↑                                                                           ↓
-     ←──────────── Status Feedback ←── ROS2 Subscribers ←──────────────────────
-```
-
-### Compatibility with Existing Simulation
-- Works with your `offboard_velocity_control.launch.py` setup
-- Compatible with MicroXRCEAgent for DDS bridging
-- Can run alongside or replace keyboard control
-- Uses same QoS profiles as your velocity_control.py
-
-## Safety Features
-
-- Altitude limits (0.5-50m)
-- Position limits (±100m from home)
-- Input validation on all commands
-- Emergency stop function
-- Clear status reporting
-
 ## Troubleshooting
 
 1. **Ollama Connection Issues**
@@ -217,18 +142,7 @@ User Input → LangGraph Agent → LLM → Tool Selection → ROS2 Publishers �
 
 ## Future Improvements
 
-1. **Advanced Features**
    - Waypoint missions
    - Return-to-home functionality
    - Geofencing support
    - Multi-drone coordination
-
-2. **Performance**
-   - GPU acceleration for LLM
-   - Response caching for common commands
-   - Predictive command completion
-
-3. **Safety**
-   - Obstacle avoidance integration
-   - Weather condition checks
-   - Battery-based flight planning
