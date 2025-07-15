@@ -37,13 +37,4 @@ def generate_launch_description():
             name='agent',
             prefix='gnome-terminal --'
         )
-
-        # ExecuteProcess(
-        #     cmd=['gnome-terminal', '--', 'bash', '-c', 
-        #         'source /opt/ros/jazzy/setup.bash && '
-        #         'source ~/ros2_workspaces/3d_printed_quad/install/setup.bash && '
-        #         'ros2 run ai_agent agent; exec bash'],
-        #     output='screen',
-        #     name='ai_agent'
-        # )
     ])
