@@ -2,7 +2,7 @@
 
 # LLM Settings
 llm:
-  model: "llama3.2:3b"  # Ollama model name
+  model: "llama3.2:3b" #"llama3.1:8b" # Ollama model name
   base_url: "http://localhost:11434"  # Use localhost for RPi4
   temperature: 0.0  # 0 for deterministic responses
   num_predict: 50   # Reduced for RPi4 performance

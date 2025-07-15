@@ -122,12 +122,11 @@ class DroneControlNode(Node):
         - land(): Lands at current position
         - fly_to_position(x, y, z): Flies to coordinates
         - get_status(): Reports status
-        - emergency_stop(): Emergency disarm
 
         Guidelines:
         1. Use appropriate tool
         2. Answer questions helpfully.
-        3. Be concise. Keep responses under 100 words."""
+        3. Be concise. Keep responses under 50 words."""
     
     def _update_status(self):
         """Update current status from drone controller"""
@@ -237,6 +236,7 @@ def main():
     spin_thread = Thread(target=rclpy.spin, args=(node,), daemon=True)
     spin_thread.start()
     
+    print(f"Ollama model: {node.config['llm']['model']}")
     print("\n🚁 Drone Control Agent Ready")
     print("=" * 40)
     print("Type commands naturally or 'exit' to quit")

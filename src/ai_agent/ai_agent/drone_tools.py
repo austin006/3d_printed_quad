@@ -338,19 +338,6 @@ def fly_to_position(x: float, y: float, z: float) -> str:
         return f"Moving to position ({x}, {y}, {z}) - timeout reached"
     except Exception as e:
         return f"Error flying to position: {str(e)}"
-
-
-@tool
-def get_battery_info() -> str:
-    """Gets detailed battery information."""
-    try:
-        node = get_node()
-        
-        battery = node.battery_percentage
-        
-        return (f"Battery: {battery}%")
-    except Exception as e:
-        return f"Error getting battery info: {str(e)}"
     
 
 @tool
@@ -362,9 +349,11 @@ def get_status() -> str:
         pos = node.get_position_enu()
         armed = "Armed" if node.is_armed() else "Disarmed"
         mode = "Offboard" if node.is_in_offboard_mode() else "Other"
+        battery = node.battery_percentage
         
         return (f"Status: {armed}, Mode: {mode}, "
-                f"Position: ({pos[0]:.1f}, {pos[1]:.1f}, {pos[2]:.1f})")
+                f"Position: ({pos[0]:.1f}, {pos[1]:.1f}, {pos[2]:.1f}), "
+                f"Battery: {battery}%")
     except Exception as e:
         return f"Error getting status: {str(e)}"
 
@@ -383,8 +372,7 @@ def create_tools(node=None, config=None):
         disarm_drone,
         land,
         fly_to_position,
-        get_status,
-        get_battery_info
+        get_status
     ]
 
 
@@ -398,6 +386,7 @@ def emergency_stop():
     try:
         node = get_node()
         node.disarm()
+        node.land_cmd()
         return "EMERGENCY STOP - Motors disarmed!"
     except Exception as e:
         return f"Error during emergency stop: {str(e)}"
