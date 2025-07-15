@@ -239,8 +239,8 @@ def main():
     
     print("\n🚁 Drone Control Agent Ready")
     print("=" * 40)
-    print("Type commands naturally or 'exit' to quit\n")
-    print("In case of emergency, type 'kill' to disarm motors immediately.")
+    print("Type commands naturally or 'exit' to quit")
+    print("In case of emergency, type 'kill' to disarm motors immediately")
     print("Example commands:")
     print("  ▸ Take off to a height of 5 meters")
     print("  ▸ Where is the drone?")
