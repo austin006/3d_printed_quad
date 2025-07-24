@@ -10,8 +10,11 @@ theme:
   font:
     text: Roboto
     code: Roboto Mono
+  favicon: ./favicon.png
   icon:
     logo: material/quadcopter
+    previous: fontawesome/solid/angle-left
+    next: fontawesome/solid/angle-right
   features:
     - navigation.footer
     - navigation.tabs
@@ -70,10 +73,12 @@ nav:
     - Materials: hardware/materials.md
     - Transmitter Setup: hardware/transmitter_setup.md
     - Wiring: hardware/wiring.md
-  - Software:
-    - QGroundControl Setup: software/qgroundcontrol_setup.md
-    - ROS2 and Gazebo: software/ros2_gazebo.md
+  - Software: 
+    - Overview: software/software.md
+    - QGroundControl: software/qgroundcontrol_setup.md
+    - ROS2: software/ros2.md
+    - Gazebo and RViz: software/gazebo_rviz.md
     - Raspberry Pi: software/raspberry_pi.md
-    - LLMs: software/LLMs.md
-  - Potential Revisions: potential_revisions.md
+    - Ollama: software/ollama.md
+    - LangGraph: software/langgraph.md
   - MAGICC Lab: https://byu-magicc.github.io/
