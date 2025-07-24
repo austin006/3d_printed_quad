@@ -76,8 +76,7 @@ nav:
   - Software: 
     - Overview: software/software.md
     - QGroundControl: software/qgroundcontrol_setup.md
-    - ROS2: software/ros2.md
-    - Gazebo and RViz: software/gazebo_rviz.md
+    - ROS2 and Gazebo: software/ros2.md
     - Raspberry Pi: software/raspberry_pi.md
     - Ollama: software/ollama.md
     - LangGraph: software/langgraph.md

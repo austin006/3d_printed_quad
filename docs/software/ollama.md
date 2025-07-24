@@ -6,10 +6,16 @@ Ollama is a framework that simplifies running large language models (LLMs) local
 
 Download [ollama](https://ollama.com/download) and see the [quickstart docs](https://github.com/ollama/ollama/blob/main/README.md#quickstart) for basic commands
 
+Download ollama for Linux:
+```
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
 ### Key Commands
 
 ```
 ollama run <model name>
+ollama pull <model name>
 ollama rm <model name>
 ollama ls
 ollama ps
@@ -19,7 +25,7 @@ ollama show
 
 ## Architecture Overview
 
-The agent is designed to work alongside your existing PX4 simulation infrastructure:
+The agent is designed to work alongside the existing PX4 simulation infrastructure:
 
 ``` mermaid
 graph TB 

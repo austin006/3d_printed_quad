@@ -13,9 +13,9 @@
 | Receiver           | RadioMaster Nano Receiver  |
 | GPS                | Micro M10 GPS              |
 
-*Go to the detailed* [*spreadsheet*](https://docs.google.com/spreadsheets/d/1LUWi4ggH35qG4yhqyKMxsZWXXt1vWTmcn4yWivKcUjc/edit?gid=2018888461#gid=2018888461)
-
 <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSRq0tHDbg0IG0rRhlybVfgOTkBPtudFkbCOZAE0m4iuqi01SQipHfZlnBKwyBWJ7AOTi9DX4quLazz/pubhtml?widget=true&amp;headers=false" width="100%" height=500></iframe>
+
+*Go to the detailed* [*spreadsheet*](https://docs.google.com/spreadsheets/d/1LUWi4ggH35qG4yhqyKMxsZWXXt1vWTmcn4yWivKcUjc/edit?gid=2018888461#gid=2018888461)
 
 ## 3D Model
 
