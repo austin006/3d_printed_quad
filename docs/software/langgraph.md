@@ -2,6 +2,10 @@
 
 This page explains what LangGraph is and how to use the drone control agent located in the ROS2 package called `ai_agent`.
 
+## Learn LangGraph
+
+For a full tutorial, use the [Introduction to LangGraph](https://academy.langchain.com/courses/intro-to-langgraph) created by LangChain Academy
+
 ## Drone Control Agent
 
 ![drone_control_agent](../assets/drone_control_agent.png)
@@ -20,7 +24,7 @@ Natural language commands are proccessed by the LangGraph agent by invoking LLM 
 | :--- | :------------------------- |
 | User | Represents natural language commands from a user. |
 | [LangGraph](https://python.langchain.com/docs/langgraph/) | A library for building stateful, multi-actor applications with LLMs, used here as the framework for the AI agent. |
-| Tools | A list of ROS2 tools provided to the AI agent to control the quadrotor. |
+| [Tools](https://github.com/austin006/3d_printed_quad/blob/main/src/ai_agent/ai_agent/drone_tools.py) | A list of ROS2 tools provided to the AI agent to control the quadrotor. |
 | [Ollama](https://ollama.com/) | A tool for running large language models (LLMs) locally. |
 
 ## Architecture Overview
@@ -65,7 +69,7 @@ graph TB
     style OLLAMA fill:#f9f,stroke:#333,stroke-width:4px  
 ```
 
-## `ai_agent` Package
+## `ai_agent`
 
 In this package, the `px4_offboard` simulation is expanded to interface with an AI Agent allowing for natural language interaction with the quadrotor. This is implented with ROS2, LangChain, LangGraph, and Ollama.
 
@@ -73,7 +77,20 @@ In this package, the `px4_offboard` simulation is expanded to interface with an 
 
 1. First make sure you have [downloaded ollama](./ollama.md) and pulled the model you wish to use
 
-2. Python virtual environment
+2. Create a python virtual environment for the required dependencies
+    ```
+    # Navigate to your ai_agent package
+    cd src/ai_agent
+
+    # Create a virtual environment
+    python3 -m venv venv
+
+    # Activate it
+    source venv/bin/activate
+
+    # Install dependencies
+    pip install langgraph langgraph-prebuilt langchain-core  langchain_ollama
+    ```
 
 ### Instructions to run the agent
 
@@ -83,8 +100,8 @@ To run the agent as a python file (without ROS2) paste the following commands in
 cd /ros2_workspaces/3d_printed_quad/src/ai_agent 
 source venv/bin/activate 
 source ~/ros2_workspaces/3d_printed_quad/install/setup.bash 
-export PYTHONPATH=$PYTHONPATH:/ros2_workspaces/3d_printed_quad/src/ai_agent python3 
-ai_agent/agent.py 
+export PYTHONPATH=$PYTHONPATH:/ros2_workspaces/3d_printed_quad/src/ai_agent 
+python3 ai_agent/agent.py 
 ```
 
 To run the agent with the launch files, build the ROS2 workspace and source the environment
