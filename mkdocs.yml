@@ -74,7 +74,7 @@ nav:
     - Transmitter Setup: hardware/transmitter_setup.md
     - Wiring: hardware/wiring.md
   - Software: 
-    - Overview: software/software.md
+    - Overview: software/overview.md
     - QGroundControl: software/qgroundcontrol_setup.md
     - ROS2 and Gazebo: software/ros2.md
     - Raspberry Pi: software/raspberry_pi.md

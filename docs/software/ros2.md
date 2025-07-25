@@ -27,11 +27,11 @@ The following set-up information explains how to use the code in the `src` direc
 
 An overview of each package is provided as well as instructions for [**setting up the environment**](#set-up).
 
-* [px4_offboard](#px4_offboard)
-* [ai_agent](./langgraph.md#ai_agent)
+* [`px4_offboard`](#px4_offboard)
+* [`ai_agent`](./langgraph.md#ai_agent)
 * [**set-up**](#set-up)
 
-## px4_offboard
+## `px4_offboard`
 
 Multi-agent quadrotor simulation using ROS2, PX4, Gazebo, QGroundControl, MicroXRCEAgent, and RViz.
 

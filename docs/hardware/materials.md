@@ -17,7 +17,7 @@
 
 *Go to the detailed* [*spreadsheet*](https://docs.google.com/spreadsheets/d/1LUWi4ggH35qG4yhqyKMxsZWXXt1vWTmcn4yWivKcUjc/edit?gid=2018888461#gid=2018888461)
 
-## 3D Model
+## Spherical Protection Cage
 
 ![quad_cage](../assets/quad_cage_2.jpg)
 /// caption

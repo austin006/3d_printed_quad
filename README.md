@@ -3,6 +3,8 @@ Multi-agent quadrotors flying in formation using ROS2
 
 Documentation: [https://austin006.github.io/3d_printed_quad/](https://austin006.github.io/3d_printed_quad/)
 
+Jump to environment [set-up](https://austin006.github.io/3d_printed_quad/software/ros2/#set-up) for using the ROS2 packages in this repository
+
 ## Editing the documentation
 
 The documentation was built using [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/)

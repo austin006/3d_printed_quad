@@ -1,0 +1,1 @@
+The `dockerfile` and `devcontainer.json` are both still in progress. Currently they aren't functioning, the goal is for them to automatically create the needed environment (as described [here](https://austin006.github.io/3d_printed_quad/software/ros2/#set-up)) for this code.
