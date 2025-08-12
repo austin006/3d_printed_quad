@@ -80,4 +80,5 @@ nav:
     - Raspberry Pi: software/raspberry_pi.md
     - Ollama: software/ollama.md
     - LangGraph: software/langgraph.md
+  - Future Work: future_work.md
   - MAGICC Lab: https://byu-magicc.github.io/
