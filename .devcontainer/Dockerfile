@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 # Prevent interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
@@ -26,7 +26,7 @@ RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o 
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-RUN pip3 install --user -U empy pyros-genmsg setuptools
+RUN pip3 install -U empy pyros-genmsg setuptools
 
 # Clone and install PX4 Autopilot
 WORKDIR /root
@@ -48,7 +48,6 @@ RUN git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git \
 WORKDIR /root/ros2_ws
 RUN mkdir -p src \
     && cd src \
-    && git clone https://github.com/austin006/3d_printed_quad.git \
     && git clone https://github.com/PX4/px4_msgs.git -b release/1.15
 
 # Copy PX4 ROS2 packages
@@ -59,8 +58,6 @@ RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && colcon build"
 
 # Set up environment
 RUN echo "source /opt/ros/jazzy/setup.bash" >> /root/.bashrc
-RUN echo "source /root/ros2_ws/install/setup.bash" >> /root/.bashrc
-
 WORKDIR /root/ros2_ws
 
 CMD ["/bin/bash"]
