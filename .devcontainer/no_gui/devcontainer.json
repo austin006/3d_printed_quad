@@ -1,0 +1,10 @@
+{
+    "name": "PX4 ROS2 Environment",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "mounts": [
+        "source=${localWorkspaceFolder}/src,target=/root/ros2_ws/src/myproject,type=bind,consistency=cached"
+    ],
+    "workspaceFolder": "/root/ros2_ws"
+}

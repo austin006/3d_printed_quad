@@ -18,8 +18,12 @@ commands = [
 
 # Loop through each command in the list
 for command in commands:
+    # If NOT using in Docker container, use gnome-terminal command 
     # Each command is run in a new tab of the gnome-terminal
     subprocess.run(["gnome-terminal", "--tab", "--", "bash", "-c", command + "; exec bash"])
+    
+    # If using in Docker container, use xterm command below and comment out the gnome-terminal command (gnome-terminal GUI isn't set up in Dockerfile)
+    # subprocess.Popen(["xterm", "-e", "bash", "-c", command + "; exec bash"])
     
     # Pause between each command
     time.sleep(1)

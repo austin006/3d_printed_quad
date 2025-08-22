@@ -16,13 +16,6 @@ RUN apt-get update && apt-get install -y \
     cmake \
     build-essential \
     sudo \
-    # Minimal GUI support packages
-    x11-apps \
-    libgl1-mesa-dev \
-    libgl1-mesa-dri \
-    libxext6 \
-    libx11-6 \
-    xterm \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ROS2 Jazzy
@@ -31,6 +24,9 @@ RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o 
     && apt-get update \
     && apt-get install -y ros-jazzy-desktop \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+# RUN pip3 install -U empy pyros-genmsg setuptools
 
 # Clone and install PX4 Autopilot
 WORKDIR /root
@@ -61,12 +57,12 @@ RUN /root/PX4-Autopilot/Tools/copy_to_ros_ws.sh /root/ros2_ws
 RUN apt-get update && \
     apt-get install -y python3-colcon-common-extensions && \
     rm -rf /var/lib/apt/lists/*
-    
+
 # Source ROS2 and build workspace
 RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && colcon build"
 
 # Set up environment
 RUN echo "source /opt/ros/jazzy/setup.bash" >> /root/.bashrc
-
 WORKDIR /root/ros2_ws
+
 CMD ["/bin/bash"]
