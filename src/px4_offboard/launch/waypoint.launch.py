@@ -54,7 +54,7 @@ def generate_launch_description():
             namespace='px4_offboard',
             executable='processes',
             name='processes',
-            prefix='gnome-terminal --'
+            prefix='xterm -e' #prefix='gnome-terminal --'
         ),
         # Node for RViz2 visualization
         Node(

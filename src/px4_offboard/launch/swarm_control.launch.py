@@ -52,7 +52,7 @@ def launch_setup(context, *args, **kwargs):
             package='px4_offboard',
             executable='control',
             name=f'control_{vehicle_id}',
-            prefix='gnome-terminal --',
+            prefix='xterm -e', #prefix='gnome-terminal --'
             parameters=[{'vehicle_id': vehicle_id}]
         )
         
