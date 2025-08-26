@@ -40,7 +40,7 @@ scp Documents/px4_offboard username@ssh.rc.byu.edu:/home/netid/ros2_workspace/sr
 
 # Pull Docker container using Apptainer
 module load apptainer
-apptainer pull ros2_px4_sim.sif docker://frostin/vsc-3d_printed_quad:latest
+apptainer pull ros2_px4_sim.sif docker://frostin/ros2-px4:latest
 
 # On host - allow X11 access
 xhost +local:
