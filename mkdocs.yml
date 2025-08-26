@@ -1,0 +1,84 @@
+site_name: 3D Printed Quadrotors
+site_description:  Multi-agent quadrotors flying in formation using ROS2 
+site_url: https://austin006.github.io/3d_printed_quad/
+site_author: Austin McGlashan and Leon Weng
+repo_url: https://github.com/austin006/3d_printed_quad
+repo_name: 3d_printed_quad
+
+theme:
+  name: material
+  font:
+    text: Roboto
+    code: Roboto Mono
+  favicon: ./favicon.png
+  icon:
+    logo: material/quadcopter
+    previous: fontawesome/solid/angle-left
+    next: fontawesome/solid/angle-right
+  features:
+    - navigation.footer
+    - navigation.tabs
+    - navigation.sections
+    - toc.follow
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.select
+
+  palette:
+    # Light Mode
+    - scheme: default
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+      primary: blue
+      accent: pink
+
+    # Dark Mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+      primary: blue grey
+      accent: deep orange
+
+markdown_extensions:
+- attr_list
+- md_in_html
+- pymdownx.emoji:
+    emoji_index: !!python/name:material.extensions.emoji.twemoji
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg
+- pymdownx.highlight:
+    anchor_linenums: true
+    line_spans: __span
+    pygments_lang_class: true
+- pymdownx.inlinehilite
+- pymdownx.snippets
+- pymdownx.superfences:
+    custom_fences:
+      - name: mermaid
+        class: mermaid
+        format: !!python/name:pymdownx.superfences.fence_code_format
+- pymdownx.tabbed:
+    alternate_style: true
+- admonition
+- pymdownx.details
+- footnotes
+- pymdownx.blocks.caption
+
+nav:
+  - Home: index.md
+  - Hardware:
+    - Materials: hardware/materials.md
+    - Transmitter Setup: hardware/transmitter_setup.md
+    - Wiring: hardware/wiring.md
+  - Software: 
+    - Overview: software/overview.md
+    - QGroundControl: software/qgroundcontrol_setup.md
+    - ROS2 and Gazebo: software/ros2.md
+    - Raspberry Pi: software/raspberry_pi.md
+    - Ollama: software/ollama.md
+    - LangGraph: software/langgraph.md
+  - Future Work: future_work.md
+  - MAGICC Lab: https://byu-magicc.github.io/
