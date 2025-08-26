@@ -3,6 +3,8 @@ FROM ubuntu:24.04
 # Prevent interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
 
 # Install basic dependencies
 RUN apt-get update && apt-get install -y \
@@ -23,7 +25,20 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libx11-6 \
     xterm \
+    # QGroundControl dependencies
+    libfuse2 \
+    libxcb-xinerama0 \
+    libxkbcommon-x11-0 \
+    libxcb-cursor-dev \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-libav \
+    gstreamer1.0-gl \
+    speech-dispatcher \
+    locales \
     && rm -rf /var/lib/apt/lists/*
+
+# Generate UTF-8 locale
+RUN locale-gen en_US.UTF-8
 
 # Install ROS2 Jazzy
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
@@ -48,6 +63,15 @@ RUN git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git \
     && make install \
     && ldconfig /usr/local/lib/
 
+# Install QGroundControl
+WORKDIR /root
+RUN wget -O QGroundControl.AppImage https://github.com/mavlink/qgroundcontrol/releases/download/v5.0.4/QGroundControl-x86_64.AppImage \
+&& chmod +x QGroundControl.AppImage \
+&& ./QGroundControl.AppImage --appimage-extract \
+&& mv squashfs-root QGroundControl \
+&& rm QGroundControl.AppImage \
+&& ln -s /root/QGroundControl/AppRun /usr/local/bin/qgroundcontrol
+
 # Create workspace and clone repositories
 WORKDIR /root/ros2_ws
 RUN mkdir -p src \
@@ -61,12 +85,23 @@ RUN /root/PX4-Autopilot/Tools/copy_to_ros_ws.sh /root/ros2_ws
 RUN apt-get update && \
     apt-get install -y python3-colcon-common-extensions && \
     rm -rf /var/lib/apt/lists/*
-    
-# Source ROS2 and build workspace
-RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && colcon build"
 
-# Set up environment
-RUN echo "source /opt/ros/jazzy/setup.bash" >> /root/.bashrc
+# Source ROS2 and build workspace
+# RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && colcon build"
+
+# Create non-root user for QGroundControl
+RUN useradd -m -s /bin/bash user \
+&& usermod -aG dialout user \
+&& usermod -aG sudo user \
+&& echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Set up environment for both root and user
+# RUN echo "source /opt/ros/jazzy/setup.bash" >> /root/.bashrc \
+# && echo "source /opt/ros/jazzy/setup.bash" >> /home/user/.bashrc
+
+# Make ros2_ws accessible to user
+RUN chown -R user:user /root/ros2_ws \
+&& chmod -R 755 /root
 
 WORKDIR /root/ros2_ws
 CMD ["/bin/bash"]
