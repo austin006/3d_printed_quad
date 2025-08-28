@@ -75,6 +75,7 @@ nav:
     - Wiring: hardware/wiring.md
   - Software: 
     - Overview: software/overview.md
+    - Docker: software/docker.md
     - QGroundControl: software/qgroundcontrol_setup.md
     - ROS2 and Gazebo: software/ros2.md
     - Raspberry Pi: software/raspberry_pi.md

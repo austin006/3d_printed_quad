@@ -87,7 +87,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Source ROS2 and build workspace
-# RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && colcon build"
+RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && colcon build"
 
 # Create non-root user for QGroundControl
 RUN useradd -m -s /bin/bash user \
