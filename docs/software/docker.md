@@ -12,7 +12,7 @@ git clone https://github.com/austin006/3d_printed_quad.git
 
 Navigate to the `devcontainer.json` file. Modify the file to build from an image, not a docker file. This is shown below:
 
-```bash
+```json
 "name": "PX4 ROS2 Environment",
 "image": "frostin/ros2-px4",
 // "build": {
