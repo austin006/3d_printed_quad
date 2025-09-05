@@ -1,5 +1,6 @@
 {
     "name": "PX4 ROS2 Environment",
+    // "image": "frostin/ros2-px4",
     "build": {
         "dockerfile": "Dockerfile"
     },

@@ -2,19 +2,45 @@
 The `Dockerfile` and `devcontainer.json` will create the needed environment (as described [here](https://austin006.github.io/3d_printed_quad/software/ros2/#set-up)) in a Docker container using the VSCode extension called Dev Containers. 
 
 ## Set-up with Docker
-I don't think this will work with Docker Desktop becuase of the virtualization that it creates which prevents X11 forwarding for the GUIs. I couldn't get it to function, instead I used [Docker engine](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository). 
+I don't think this will work with Docker Desktop becuase of the virtualization that it creates which prevents X11 forwarding for the GUIs. I couldn't get it to function. Instead I used [Docker engine](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) without Docker Desktop. 
 
 Clone this github repo into your desired directory
 
-`git clone https://github.com/austin006/3d_printed_quad.git`
+```bash
+git clone https://github.com/austin006/3d_printed_quad.git
+```
 
-Install the "Dev Containers" extension in VSCode and use the command palette (Ctrl+Shift+P) to select the option "Dev Containers: Rebuild and Reopen in Container". The container will take a long time to build the first time and it will have ROS2 Jazzy, PX4, QGroundControl, and MicroXRCE on a base image of Ubuntu 22.04.
+Navigate to the `devcontainer.json` file. Modify the file to build from an image, not a docker file. This is shown below:
 
-Another option is to simply pull the Docker image from Docker Hub. 
+```bash
+"name": "PX4 ROS2 Environment",
+"image": "frostin/ros2-px4",
+// "build": {
+//     "dockerfile": "Dockerfile"
+// },
+```
 
-`docker pull frostin/ros2-px4:latest`
+Allow X11 access for any local user (run this on your host machine)
 
-Make sure you source, build, and source before running any launch files.
+```bash
+xhost +local:
+```
+
+Be sure to undo xhost permission to re-enable X11 security after finishing with the container
+
+```bash
+`xhost -`
+```
+
+Install the "Dev Containers" extension in VSCode and use the command palette (Ctrl+Shift+P) to select the option "Dev Containers: Reopen in Container". This may take a long time to open the container the first time. The container has ROS2 Jazzy, PX4, QGroundControl, and MicroXRCE on a base image of Ubuntu 22.04.
+
+You can also pull the Docker image from Docker Hub beforehand and then opening the container. 
+
+```bash
+docker pull frostin/ros2-px4:latest
+```
+
+Once you are in the container, make sure you source, build, and source before running any launch files.
 
 ```bash
 cd /root/ros2_ws
@@ -23,9 +49,24 @@ colcon build
 source install/setup.bash
 ```
 
-### Path Modifications
+Test out running a simulation with a launch file
 
-The original code assumes that QGroundControl and PX4-Autopilot are located in the home directory (~). The Docker container places these in a directory at `/root`. You will essentially need to replace `~/` with `/root/` for the file path locations of these applications.
+```bash
+ros2 launch px4_offboard offboard_velocity_control.launch.py
+```
+
+### QGC Path Modifications
+
+The original code assumes that QGroundControl is located in the home directory (~). The Docker container places it in a directory at `/root`. You will essentially need to replace `~/` with `/root/` for the file path locations of these applications.
+
+Alternatively you can simply find the terminal window where QGroundControl attempted to start from and run either of the following commands
+
+```bash
+# Launch QGC
+sudo -u user qgroundcontrol
+# or this 
+/root/QGroundControl/AppRun
+```
 
 ### Gnome-Terminal Support
 
@@ -55,7 +96,7 @@ apptainer pull ros2_px4_sim.sif docker://frostin/ros2-px4:latest
 xhost +local:
 
 # Create a directory overlay
-mkdir -p ./overlay_dir
+mkdir -p ./overlay_dirAnother option is to
 
 # Request an interactive compute node
 salloc --time=1:00:00 -c 12 --mem=16G --gpus=1 --x11
@@ -73,9 +114,6 @@ apptainer shell \
   --env DISPLAY="$DISPLAY" \
   --env XAUTHORITY="$XAUTHORITY" \
   ros2_px4_sim.sif
-
-# Might need to add this flag as well 
-    --bind ./src/px4_offboard:/root/ros2_ws/src/px4_offboard \
 
 # Source, build, source the workspace
 cd /root/ros2_ws
@@ -141,8 +179,9 @@ source opt/ros/jazzy/setup.bash
 source install/setup.bash
 
 # Perform simulations. Use any node or launch file to run the ROS2-PX4 Gazebo simulation.
+ros2 launch px4_offboard offboard_velocity_control.launch.py
+ros2 launch px4_offboard multi_waypoint_swarm.launch.py num_vehicles:=3
 ```
 
 ## Notes
-- The `no_gui` folder is previous design of a simpler Docker container that doesn't support GUIs. 
 - The ollama and LangGraph environment for the `ai_agent` package is not included in the container as of now.
