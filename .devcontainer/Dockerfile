@@ -1,3 +1,6 @@
+# Dockerfile for ROS2 Jazzy with PX4 Autopilot and QGroundControl
+# This Dockerfile sets up an Ubuntu 24.04 environment with ROS2 Jazzy, PX4 Autopilot, and QGroundControl, along with necessary dependencies.
+
 FROM ubuntu:24.04
 
 # Prevent interactive prompts during installation

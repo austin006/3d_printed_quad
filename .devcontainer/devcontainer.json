@@ -1,9 +1,10 @@
 {
     "name": "PX4 ROS2 Environment",
-    "image": "frostin/ros2-px4",
-    // "build": {
-    //     "dockerfile": "Dockerfile"
-    // },
+    // "image": "frostin/ros2-px4",
+    "build": {
+        // "dockerfile": "Dockerfile"
+        "dockerfile": "Dockerfile.vgl"
+    },
     "mounts": [
         "source=${localWorkspaceFolder}/src,target=/root/ros2_ws/src/myproject,type=bind,consistency=cached",
         "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind"
