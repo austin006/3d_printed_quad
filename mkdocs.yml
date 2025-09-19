@@ -81,6 +81,6 @@ nav:
     - Raspberry Pi: software/raspberry_pi.md
     - Ollama: software/ollama.md
     - LangGraph: software/langgraph.md
-    - MOCAP Room: mocap.md
+    - MOCAP Room: software/mocap.md
   - Future Work: future_work.md
   - MAGICC Lab: https://byu-magicc.github.io/
