@@ -10,7 +10,7 @@ Clone this github repo into your desired directory
 git clone https://github.com/austin006/3d_printed_quad.git
 ```
 
-Navigate to the `devcontainer.json` file. Modify the file to build from an image, not a docker file. This is shown below:
+Navigate to the `devcontainer.json` file. Make sure to build from the image, not a dockerfile. This is shown below:
 
 ```json
 "name": "PX4 ROS2 Environment",
@@ -70,7 +70,19 @@ sudo -u user qgroundcontrol
 
 ### Gnome-Terminal Support
 
-In addition, `gnome-terminal` is not configured in this Docker container. Instead I use a simpler alternative called `xterm`. By default the code uses `xterm` and so you will need to comment/uncomment some lines to switch to `gnome-terminal` if desired. The two node files to change are `processes.py` and `swarm_spawner.py` located at src/px4_offboard/px4_offboard and the launch files to change are `HITL_offboardvelocity_control.launch.py`, `offboard_velocity_control.launch.py`, `swarm_control.launch.py`, and `waypoint.launch.py` all located at src/px4_offboard/launch.
+In addition, `gnome-terminal` is not configured in this Docker container. Instead I use a simpler alternative called `xterm`. By default the code uses `xterm` and so you will need to comment/uncomment some lines to switch to `gnome-terminal` if desired. 
+
+The two node files to change are located at `src/px4_offboard/px4_offboard`
+
+- `processes.py` 
+- `swarm_spawner.py`  
+
+The launch files to change are all located at `src/px4_offboard/launch` 
+
+- `HITL_offboardvelocity_control.launch.py`
+- `offboard_velocity_control.launch.py`
+- `swarm_control.launch.py`
+- `waypoint.launch.py` 
 
 ## ORC Set-up with Apptainer
 
@@ -122,8 +134,15 @@ colcon build
 source install/setup.bash
 
 # Try one of the ROS2 launch files
+# 1 quadrotor, keyboard commands
 ros2 launch px4_offboard offboard_velocity_control.launch.py
+# 3 quadrotors, automatic flying to waypoints
 ros2 launch px4_offboard multi_waypoint_swarm.launch.py num_vehicles:=3
+# 5 quadrotors, automatic flying to waypoints
+ros2 launch px4_offboard multi_waypoint_swarm.launch.py num_vehicles:=5
+
+# Start QGroundControl. An xterm window will open up and try to start QGC but it is not saved in the expected location. Find the xterm window where QGC failed to launch and run the following command
+/root/QGroundControl/Apprun
 ```
 
 If the launch files didn't work try testing everything separately, follow these steps:
@@ -181,7 +200,41 @@ source install/setup.bash
 # Perform simulations. Use any node or launch file to run the ROS2-PX4 Gazebo simulation.
 ros2 launch px4_offboard offboard_velocity_control.launch.py
 ros2 launch px4_offboard multi_waypoint_swarm.launch.py num_vehicles:=3
+
+# Don't forget to start QGroundControl separately 
+/root/QGroundControl/Apprun
 ```
+
+### VirtualGL 
+
+Improve framerate by wrapping the simulation with the vglrun command to ensure it utilizes the GPU for rendering. The issue is this currently only works on the login nodes.
+
+**Make sure you use the docker image with VirtualGL installed. This image is called `frostin/ros2-px4-vgl`**
+
+```bash
+# Launch the apptainer in a login node
+apptainer shell \
+    --cleanenv \
+    --overlay ./overlay_dir \
+    --bind /tmp/.X11-unix:/tmp/.X11-unix \
+    --bind /dev/dri:/dev/dri \
+    --bind ./src/px4_offboard:/root/ros2_ws/src/px4_offboard \
+    --env DISPLAY=$DISPLAY \
+    --env XDG_RUNTIME_DIR=/tmp \
+    --nv \ 
+    ros2_px4_vgl_sim.sif
+
+# Source, build, source the workspace
+cd /root/ros2_ws
+source opt/ros/jazzy/setup.bash
+colcon build
+source install/setup.bash
+
+# Wrap the ROS2 launch file with vglrun command
+vglrun ros2 launch px4_offboard offboard_velocity_control.launch.py
+```
+
+The `--nv` flag automatically makes the host server's proprietary NVIDIA drivers and libraries available inside your container.
 
 ## Notes
 - The ollama and LangGraph environment for the `ai_agent` package is not included in the container as of now.
