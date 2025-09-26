@@ -1,5 +1,6 @@
 # Dockerfile for ROS2 Jazzy with PX4 Autopilot and QGroundControl
 # This Dockerfile sets up an Ubuntu 24.04 environment with ROS2 Jazzy, PX4 Autopilot, and QGroundControl, along with necessary dependencies.
+# Note: This is an older version and includes the px4_msgs_old and translation_node packages.
 
 FROM ubuntu:24.04
 
@@ -80,6 +81,9 @@ WORKDIR /root/ros2_ws
 RUN mkdir -p src \
     && cd src \
     && git clone https://github.com/PX4/px4_msgs.git -b release/1.15
+
+# Copy PX4 ROS2 packages
+RUN /root/PX4-Autopilot/Tools/copy_to_ros_ws.sh /root/ros2_ws
 
 # Install colcon and dependencies
 RUN apt-get update && \
