@@ -39,7 +39,7 @@ docker run -it \
 
 ### Login to Jetson
 
-- ssh command: `ssh magicc@192.168.1.73`
+- ssh command: `ssh magicc@192.168.1.73` or `ssh magicc@ubuntu.local`
 - username: `magicc`
 - password: `magicc`
 
