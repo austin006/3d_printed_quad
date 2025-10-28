@@ -100,6 +100,8 @@ After everything has started, arm the drone in QGroundControl and switch it into
 
 ## Set-up
 
+A faster, simpler alternative to the following steps is to use a Docker container. See this page for instructions to [Set-up with Docker](./docker.md)
+
 ### Install PX4 Autopilot
 To [Install PX4](https://docs.px4.io/main/en/dev_setup/dev_env_linux_ubuntu.html#simulation-and-nuttx-pixhawk-targets) run this code 
 ```

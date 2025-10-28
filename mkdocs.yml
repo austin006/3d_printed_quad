@@ -73,12 +73,13 @@ nav:
     - Materials: hardware/materials.md
     - Transmitter Setup: hardware/transmitter_setup.md
     - Wiring: hardware/wiring.md
+    - Raspberry Pi: hardware/raspberry_pi.md
+    - Jetson Nano: hardware/jetson_nano.md
   - Software: 
     - Overview: software/overview.md
     - Docker: software/docker.md
     - QGroundControl: software/qgroundcontrol_setup.md
     - ROS2 and Gazebo: software/ros2.md
-    - Raspberry Pi: software/raspberry_pi.md
     - Ollama: software/ollama.md
     - LangGraph: software/langgraph.md
     - MOCAP Room: software/mocap.md

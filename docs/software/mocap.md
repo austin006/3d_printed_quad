@@ -1,77 +1,45 @@
 # Quadrotor Flight with ROS2 and PX4 - Guide
 
-## Set-up
+This page describes how to fly a quadrotor using a motion capture (MOCAP) system. Instructions on how to fly a quadrotor using PX4 in offboard mode through QGroundControl and ROS2.
 
-Set correct IP address for the client if not automatically configured
-```bash
-uxrce_dds_client stop
-param set UXRCE_DDS_AG_IP -1062731775
-param save
-uxrce_dds_client start
-```
-
-An alternative to setting the parameter is to run client with override flag
-```bash
-uxrce_dds_client start -h 192.168.0.1 -p 8888
-```
-
-Check connection from Jetson to Pixhawk
-```bash
-ping 192.168.0.3
-```
-
-Pull and run the simplest ROS Jazzy container for ARM64
-```bash
-docker run -it \
-    --name ros2-jazzy-px4 \
-    --network host \
-    --privileged \
-    -v /dev:/dev \
-    -v $HOME/workspace:/workspace \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -e DISPLAY=$DISPLAY \
-    -e QT_X11_NO_MITSHM=1 \
-    --restart unless-stopped \
-    ros:jazzy bash
-```
-
-## Starting a Session
-
-### Login to Jetson
-
-- ssh command: `ssh magicc@192.168.1.73`
-- username: `magicc`
-- password: `magicc`
-
-### Environment Set-up
-
-Restart the existing container
-```bash
-docker start ros2-jazzy-px4
-docker exec -it ros2-jazzy-px4 bash
-```
-
-Start the agent
-
-```bash
-MicroXRCEAgent udp4 -p 8888
-```    
-    
 ## MOCAP Set-up
+
+Basic overview:
+
+1. Create an asset
+2. Track and publish data via VRPN
+3. Start VRPN client node
+4. Subscribe to data on ROS2 topic
+
+### Create an Asset
+
+See [Leon's Tutorial](https://www.notion.so/MOCAP-Room-24cdc719863380bbb0e2c94d5b7d8ec7) for a detailed walk-through.
+
+### Publish MOCAP Data
+
+See [Leon's Tutorial](https://www.notion.so/MOCAP-Room-24cdc719863380bbb0e2c94d5b7d8ec7) for a detailed walk-through.
+
+Note that you only need to enable the VRPN option. NatNet streaming enabled is not required.
+
+### Receive MOCAP Data
+
+See [Leon's Tutorial](https://www.notion.so/MOCAP-Room-24cdc719863380bbb0e2c94d5b7d8ec7) for a detailed walk-through.
+
+The data of the asset (position and quaternion) will be published to a ROS2 topic.
 
 Install vrpn-mocap package
 ```bash
 sudo apt install ros-<rosdistro>-vrpn-mocap
 ```
 
-Run the mocap node
+Run the mocap node. The server number is something like `192.168.1.191`
 ```bash
+ros2 launch vrpn_mocap client.launch.yaml server:=<server number> port:=3883
+# Or try this
 ros2 run vrpn_client_ros vrpn_client_node 
-ros2 launch vrpn_mocap client.launch.yaml server:=192.168.1.3 port:=3883
-ros2 launch vrpn_mocap client.launch.yaml server:=192.168.1.191 port:=3883
 ```
 
-Check mocap data being published
+Check mocap data being published. **You must be connected to MAGICC wifi!**
 ```bash
 ros2 topic echo /vrpn_mocap/<asset_name>/pose
 ```
@@ -82,11 +50,47 @@ ros2 topic hz /vrpn_mocap/<asset_name>/pose
 ```
 
 ### Resources
-- [MAGICC Lab Tutorial](https://magicc.byu.edu/wiki/ros2_tutorials/mocap/mocap_tutorial/#data-collecting-with-ros)
+
 - [Leon's Tutorial](https://www.notion.so/MOCAP-Room-24cdc719863380bbb0e2c94d5b7d8ec7)
+- [MAGICC Lab Tutorial](https://magicc.byu.edu/wiki/ros2_tutorials/mocap/mocap_tutorial/#data-collecting-with-ros)
 - [VRPN Documentation](https://index.ros.org/r/vrpn_mocap/#jazzy)
 
-## Helpful Commands to remember
+## PX4 Offboard Mode
+
+To fly autonomously via ROS2 commands, the vehicle must be in offboard mode. This requires configuration of PX4 parameters as described below as well as a constant proof of life signal being published from the ROS2 controller program.
+
+### PX4 Parameters
+
+- `EKF2_EV_CTRL` = 11
+- `EKF2_EV_DELAY` = 0.0ms
+- `EKF2_HGT_REF` = Vision
+
+EKF2_IMU_CTRL = 1
+EKF2_MAG_DECL = -5.4deg
+EKF2_MULTI_IMU = 3
+EKF2_MULTI_MAG = 3
+
+EKF2_IMU_CTRL = 1
+EKF2_MAG_DECL = 0.0 deg
+EKF2_MULTI_IMU = 3
+EKF2_MULTI_MAG = 3
+
+EKF2_EV_CTRL: 3
+EKF2_EV_DELAY: 0.1
+EKF2_EV_NOISE_MD: 1
+EKF2_GPS_CHECK: 240
+EKF2_GPS_CTRL: 4
+EKF2_HGT_REF: 3
+EKF2_IMU_CTRL: 1
+
+#### Resources
+
+- PX4 Guide - [EKF2 Tuning/Configuration](https://docs.px4.io/main/en/ros/external_position_estimation#ekf2-tuning-configuration)
+- AREAL Hardware Standup Guide - [PX4 Parameters for VICON Camera Feedback](https://areal-gt.github.io/documentation/_build/Hardware%20Standup%20Guide/hardware_su.html#px4-parameters-for-vicon-camera-feedback)
+- Github issue - [Vicon Position Tracking w/ ROS2](https://github.com/PX4/PX4-Autopilot/issues/21232)
+- Github issue - [Flying in position mode with Optitrack motion capture is unstable](https://github.com/PX4/PX4-Autopilot/issues/21468)
+
+## Helpful Commands for Debugging
 
 Launch QGC
 ```bash

@@ -34,7 +34,7 @@ Be sure to undo xhost permission to re-enable X11 security after finishing with 
 
 Install the "Dev Containers" extension in VSCode and use the command palette (Ctrl+Shift+P) to select the option "Dev Containers: Reopen in Container". This may take a long time to open the container the first time. The container has ROS2 Jazzy, PX4, QGroundControl, and MicroXRCE on a base image of Ubuntu 22.04.
 
-You can also pull the Docker image from Docker Hub beforehand and then opening the container. 
+You can also pull the Docker image from Docker Hub beforehand and then open the container. 
 
 ```bash
 docker pull frostin/ros2-px4:latest
@@ -141,7 +141,9 @@ ros2 launch px4_offboard multi_waypoint_swarm.launch.py num_vehicles:=3
 # 5 quadrotors, automatic flying to waypoints
 ros2 launch px4_offboard multi_waypoint_swarm.launch.py num_vehicles:=5
 
-# Start QGroundControl. An xterm window will open up and try to start QGC but it is not saved in the expected location. Find the xterm window where QGC failed to launch and run the following command
+# Start QGroundControl. 
+# An xterm window will open up and try to start QGC but it is not saved in the expected location. 
+# Find the xterm window where QGC failed to launch and run the following command:
 /root/QGroundControl/Apprun
 ```
 
