@@ -7,18 +7,17 @@ import os
 
 def generate_launch_description():
     package_dir = get_package_share_directory('px4_offboard')
-    # bash_script_path = os.path.join(package_dir, 'scripts', 'TerminatorScript.sh')
     
-    # Command to run the Micro XRCE-DDS Agent in a new terminal
-    micro_xrce_agent = ExecuteProcess(
-        cmd=['MicroXRCEAgent', 'udp4', '-p', '8888'],
-        prefix='xterm -e', #prefix='gnome-terminal --'
-        output='screen'
-    )
+    # # Command to run the Micro XRCE-DDS Agent in a new terminal
+    # micro_xrce_agent = ExecuteProcess(
+    #     cmd=['MicroXRCEAgent', 'udp4', '-p', '8888'],
+    #     prefix='xterm -e', #prefix='gnome-terminal --'
+    #     output='screen'
+    # )
 
     return LaunchDescription([
-        # Launch the Micro XRCE-DDS Agent
-        micro_xrce_agent,
+        # # Launch the Micro XRCE-DDS Agent
+        # micro_xrce_agent,
 
         # ExecuteProcess(cmd=['bash', bash_script_path], output='screen'),
         Node( 
