@@ -162,7 +162,8 @@ class OffboardControl(Node):
     #callback function that arms, takes off, and switches to offboard mode
     #implements a finite state machine
     def arm_timer_callback(self):
-
+        self.get_logger().info(f"Current State: {self.current_state}, Nav State: {self.nav_state}, Arm State: {self.arm_state}")
+        
         match self.current_state:
             case "IDLE":
                 if(self.flightCheck and self.arm_message == True):
@@ -226,7 +227,7 @@ class OffboardControl(Node):
 
     # Takes off the vehicle to a user specified altitude (meters)
     def take_off(self):
-        self.publish_vehicle_command(VehicleCommand.VEHICLE_CMD_NAV_TAKEOFF, param1 = 1.0, param7=5.0) # param7 is altitude in meters
+        self.publish_vehicle_command(VehicleCommand.VEHICLE_CMD_NAV_TAKEOFF, param1 = 1.0, param7=1.0) # param7 is altitude in meters
         self.get_logger().info("Takeoff command send")
 
     #publishes command to /fmu/in/vehicle_command

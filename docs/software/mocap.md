@@ -61,27 +61,21 @@ To fly autonomously via ROS2 commands, the vehicle must be in offboard mode. Thi
 
 ### PX4 Parameters
 
-- `EKF2_EV_CTRL` = 11
-- `EKF2_EV_DELAY` = 0.0ms
-- `EKF2_HGT_REF` = Vision
+- `EKF2_BARO_CTRL`: 0
+- `EKF2_EV_CTRL`: 11
+- `EKF2_GPS_CHECK`: 0
+- `EKF2_GPS_CTRL`: 0
+- `EKF2_EV_DELAY`: 0.0ms
+- `EKF2_HGT_REF`: Vision
+- `EKF2_MAG_CHECK`: 0
+- `EKF2_MAG_TYPE`: None
+- `EKF2_MULTI_IMU`: 3
+- `EKF2_RNG_CTRL`: Disable range fusion 
 
-EKF2_IMU_CTRL = 1
-EKF2_MAG_DECL = -5.4deg
-EKF2_MULTI_IMU = 3
-EKF2_MULTI_MAG = 3
-
-EKF2_IMU_CTRL = 1
-EKF2_MAG_DECL = 0.0 deg
-EKF2_MULTI_IMU = 3
-EKF2_MULTI_MAG = 3
-
-EKF2_EV_CTRL: 3
-EKF2_EV_DELAY: 0.1
-EKF2_EV_NOISE_MD: 1
-EKF2_GPS_CHECK: 240
-EKF2_GPS_CTRL: 4
-EKF2_HGT_REF: 3
-EKF2_IMU_CTRL: 1
+![Parameter Values](../assets/PX4_parameters.png){ width="100%" }
+/// caption
+Parameters set using QGroundControl
+///
 
 #### Resources
 
@@ -91,6 +85,18 @@ EKF2_IMU_CTRL: 1
 - Github issue - [Flying in position mode with Optitrack motion capture is unstable](https://github.com/PX4/PX4-Autopilot/issues/21468)
 
 ## Helpful Commands for Debugging
+
+### Quick Reference
+
+Start VRPN Client
+```bash
+ros2 launch vrpn_mocap client.launch.yaml server:=192.168.1.201 port:=3883
+```
+
+Login to Jetson
+```bash
+ssh magicc@ubuntu.local
+```
 
 Launch QGC
 ```bash
@@ -102,28 +108,24 @@ Clone `px4_msgs` package
 git clone https://github.com/PX4/px4_msgs.git
 ```
 
+### ROS2 Commands
+
 Check the published mocap data
 ```bash
 ros2 topic echo /vrpn_mocap/x650_quad/pose
 ros2 topic hz /vrpn_mocap/x650_quad/pose
 ```
 
-Check the position data on PX4 topic
+Check the position data passed to PX4
 ```bash
 ros2 topic echo /fmu/in/vehicle_visual_odometry
 ros2 topic hz /fmu/in/vehicle_visual_odometry
 ```
 
-Check the PX4 data received (in the MAVLink Console)
+Check odometry data published by EKF2
 ```bash
-# See the recent data received on a PX4 topic
-listener vehicle_visual_odometry
-# Manage ekf2 
-ekf2 stop
-ekf2 start
-ekf2 status
-# Check PX4's internal time
-uorb top -1 vehicle_visual_odometry
+ros2 topic echo /fmu/out/vehicle_odometry
+ros2 topic hz /fmu/out/vehicle_odometry
 ```
 
 Rebuild the `mocap_px4_bridge` package
@@ -131,4 +133,35 @@ Rebuild the `mocap_px4_bridge` package
 colcon build --packages-select mocap_px4_bridge
 source install/setup.bash 
 ros2 run mocap_px4_bridge mocap_px4_bridge
+```
+
+Playback saved mocap data from a rosbag
+```bash
+ros2 bag play mocap_data/
+```
+
+### PX4 Console Debugging 
+
+This is in the MAVLink Console
+```bash
+# Check flight status
+commander status
+# See the recent data received on any PX4 topic
+listener vehicle_visual_odometry
+listener vehicle_status
+listener vehicle_odometry
+listener estimator_status
+listener vehicle_local_position
+# Manage ekf2 
+ekf2 stop
+ekf2 start
+ekf2 status
+# Check PX4's internal time
+uorb top -1 vehicle_visual_odometry
+# Other checks
+listener estimator_innovations
+listener estimator_innovation_variances
+listener estimator_status_flags
+listener sensor_combined
+commander check
 ```

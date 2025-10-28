@@ -42,6 +42,20 @@ ros2 topic pub /fmu/in/vehicle_command px4_msgs/msg/VehicleCommand "{
   from_external: true 
 }"
 
+# Switch to loiter mode
+ros2 topic pub /fmu/in/vehicle_command px4_msgs/msg/VehicleCommand "{
+ timestamp: $(date +%s%N),
+ param1: 1.0,
+ param2: 4.0,
+ param3: 3.0,
+ command: 176,
+ target_system: 1,
+ target_component: 1,
+ source_system: 1,
+ source_component: 1,
+ from_external: true
+}"
+
 # Land the drone (make sure to stop publishing offboard mode and trajectory_setpoint)
 ros2 topic pub /fmu/in/vehicle_command px4_msgs/msg/VehicleCommand "{
   timestamp: $(date +%s%N),
