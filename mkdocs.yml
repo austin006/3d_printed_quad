@@ -74,7 +74,7 @@ nav:
     - Transmitter Setup: hardware/transmitter_setup.md
     - Wiring: hardware/wiring.md
     - Raspberry Pi: hardware/raspberry_pi.md
-    - Jetson Nano: hardware/jetson_nano.md
+    - Jetson Nano: hardware/jetson.md
   - Software: 
     - Overview: software/overview.md
     - Docker: software/docker.md
