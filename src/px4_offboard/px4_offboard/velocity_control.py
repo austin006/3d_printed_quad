@@ -195,7 +195,7 @@ class OffboardControl(Node):
                 if(not(self.flightCheck)):
                     self.current_state = "IDLE"
                     self.get_logger().info(f"Loiter, Flight Check Failed")
-                elif(self.nav_state == VehicleStatus.NAVIGATION_STATE_AUTO_LOITER):
+                elif(self.nav_state == VehicleStatus.NAVIGATION_STATE_POSCTL): # original (loiter mode): NAVIGATION_STATE_AUTO_LOITER. Hardware implementation - position mode: NAVIGATION_STATE_POSCTL
                     self.current_state = "OFFBOARD"
                     self.get_logger().info(f"Loiter, Offboard")
                 self.arm()

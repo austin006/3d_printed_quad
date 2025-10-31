@@ -44,7 +44,8 @@ setup(
                 'circle_offboard_control = px4_offboard.circle_offboard_control:main',
                 'square_offboard_control = px4_offboard.square_offboard_control:main',
                 'waypoint_offboard_control = px4_offboard.waypoint_offboard_control:main',
-                'multi_visualizer = px4_offboard.multi_visualizer:main'
+                'multi_visualizer = px4_offboard.multi_visualizer:main',
+                'orbit_offboard_control = px4_offboard.orbit_offboard_control:main'
         ],
     },
 )
