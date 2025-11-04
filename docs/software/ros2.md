@@ -195,6 +195,27 @@ Your workspace directory should now look similar to the following
 ├── README.md
 ```
 
+#### Enable symlinks
+
+This is very helpful as you don't have to build and source every time you edit the code. 
+
+```
+# 1. Initial build (use symlinks)
+colcon build --symlink-install
+
+# 2. Source once
+source install/setup.bash
+
+# 3. Edit code
+vim src/my_pkg/src/main.py
+
+# 4. Rebuild only one package (needed only for C++)
+colcon build --packages-select my_pkg
+
+# 5. Re-run
+ros2 run my_pkg node_name
+```
+
 ### Running the code
 
 Follow the instructions for each package to run the code
