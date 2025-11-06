@@ -6,6 +6,7 @@ from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy, Durabi
 from px4_msgs.msg import OffboardControlMode
 from px4_msgs.msg import TrajectorySetpoint
 from px4_msgs.msg import VehicleStatus
+import numpy as np
 
 class OffboardControl(Node):
     def __init__(self):
@@ -44,7 +45,7 @@ class OffboardControl(Node):
         self.nav_state = msg.nav_state
         self.arming_state = msg.arming_state
 
-    def path_position(self, t):
+    def example_path(self, t):
         """
         Calculate 3D position using the time passed and a pre-determined path.
         FRU coordinates: x-forward, y-right, z-up
@@ -69,7 +70,7 @@ class OffboardControl(Node):
         x_radius = 2.0  # Width of the pattern
         y_radius = 1.0  # Height of the pattern
         altitude = 2.5  # Constant 2.5m altitude
-        speed = 0.2     # Controls the speed of the trajectory
+        speed = 1     # Controls the speed of the trajectory
         
         # --- Parametric Equations for Position ---
         # x = A * cos(w*t)
@@ -93,6 +94,109 @@ class OffboardControl(Node):
 
         return x, y, z, yaw
 
+    def rotating_figure_eight_path(self, t):
+        """
+        Calculate 3D position using the time passed and a pre-determined path.
+        FRU coordinates: x-forward, y-right, z-up
+        
+        This function calculates a figure-eight trajectory. The plane of this
+        trajectory constantly rotates around the world's X-axis (rolling).
+        The yaw is fixed to 0.0 (always pointing forward).
+        """
+        
+        # --- Figure-Eight Trajectory Parameters ---
+        x_radius = 2.0  # Width of the pattern (along X-axis)
+        y_radius = 1.0  # Max displacement in Y/Z (on the rotating plane)
+        altitude = 2.5  # The altitude at the center of the rotation (z-offset)
+        speed = .5     # Controls the speed of the figure-eight (rad/s)
+        
+        # --- Rotation Parameters ---
+        # Speed at which the entire plane of the figure-eight rotates
+        # around the X-axis (in rad/s). A positive value causes a "rolling" motion.
+        rotation_speed = 0.01
+        
+        # Current rotation angle of the plane at time t
+        rotation_angle = rotation_speed * t
+        
+        # --- Local coordinates of the figure-eight ---
+        # This is the path as if it were "flat" on the X-Y plane
+        x_local = x_radius * np.cos(speed * t)
+        y_local = y_radius * np.sin(2 * speed * t)
+        
+        # --- Parametric Equations for 3D Position ---
+        # We apply a 3D rotation around the X-axis to the local coordinates
+        # and then add the altitude offset.
+        #
+        # Rotation Matrix (X-axis):
+        # [ 1,  0,      0     ]
+        # [ 0,  cos(a), -sin(a)]
+        # [ 0,  sin(a),  cos(a)]
+        #
+        # Applying to the point (x_local, y_local, 0):
+        # x = x_local
+        # y = y_local * cos(a)
+        # z = y_local * sin(a)
+        
+        # The X position is unaffected by rotation around the X-axis
+        x = x_local
+        
+        # The y_local coordinate is "split" between the world y and z axes
+        y = y_local * np.cos(rotation_angle)
+        
+        # The rotation is centered at the z=altitude line
+        z = y_local * np.sin(rotation_angle) + altitude
+        
+        yaw = 0.0
+
+        return x, y, z, yaw
+
+    def rotating_circle_path(self, t):
+        """
+        Calculate 3D position using the time passed and a pre-determined path.
+        FRU coordinates: x-forward, y-right, z-up
+        
+        This function calculates a circular trajectory. The plane of this
+        trajectory constantly rotates around the world's X-axis (rolling).
+        The yaw is fixed to 0.0 (always pointing forward).
+        """
+        
+        # --- Circle Trajectory Parameters ---
+        radius = 2.0    # Radius of the circle on the local plane
+        altitude = 2.5  # The altitude at the center of the rotation (z-offset)
+        speed = 0.75     # Controls the speed of travel around the circle (rad/s)
+        
+        # --- Rotation Parameters ---
+        # Speed at which the entire plane of the circle rotates
+        # around the X-axis (in rad/s).
+        rotation_speed = 0.1 
+        
+        # Current rotation angle of the plane at time t
+        # 't' is the total elapsed time from the node's loop
+        rotation_angle = rotation_speed * t
+        
+        # --- Local coordinates of the circle ---
+        # This is the path as if it were "flat" on the X-Y plane
+        x_local = radius * np.cos(speed * t)
+        y_local = radius * np.sin(speed * t)
+        
+        # --- Parametric Equations for 3D Position ---
+        # We apply the 3D rotation around the X-axis
+        
+        # The X position is unaffected by rotation around the X-axis
+        x = x_local
+        
+        # The y_local coordinate is "split" between the world y and z axes
+        y = y_local * np.cos(rotation_angle)
+        
+        # The rotation is centered at the z=altitude line
+        z = y_local * np.sin(rotation_angle) + altitude
+        
+        # --- Fixed Yaw ---
+        # As requested, the yaw is fixed, always pointing forward (0 radians).
+        yaw = 0.0
+
+        return x, y, z, yaw
+
     def cmdloop_callback(self):
         # Publish offboard control modes
         offboard_msg = OffboardControlMode()
@@ -110,7 +214,7 @@ class OffboardControl(Node):
             trajectory_msg = TrajectorySetpoint()
             
             # Calculate 3D position
-            x, y, z, yaw = self.path_position(self.t)
+            x, y, z, yaw = self.rotating_circle_path(self.t)
             
             # Set the trajectory position (NED coordinates, hence negative z for altitude)
             trajectory_msg.position[0] = x
