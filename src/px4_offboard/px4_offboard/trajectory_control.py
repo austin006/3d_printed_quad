@@ -105,15 +105,15 @@ class OffboardControl(Node):
         """
         
         # --- Figure-Eight Trajectory Parameters ---
-        x_radius = 2.0  # Width of the pattern (along X-axis)
-        y_radius = 1.0  # Max displacement in Y/Z (on the rotating plane)
-        altitude = 2.5  # The altitude at the center of the rotation (z-offset)
+        x_radius = 1.0  # Width of the pattern (along X-axis)
+        y_radius = 0.5  # Max displacement in Y/Z (on the rotating plane)
+        altitude = 1.0  # The altitude at the center of the rotation (z-offset)
         speed = .5     # Controls the speed of the figure-eight (rad/s)
         
         # --- Rotation Parameters ---
         # Speed at which the entire plane of the figure-eight rotates
         # around the X-axis (in rad/s). A positive value causes a "rolling" motion.
-        rotation_speed = 0.01
+        rotation_speed = 0.05
         
         # Current rotation angle of the plane at time t
         rotation_angle = rotation_speed * t
@@ -161,9 +161,9 @@ class OffboardControl(Node):
         """
         
         # --- Circle Trajectory Parameters ---
-        radius = 2.0    # Radius of the circle on the local plane
-        altitude = 2.5  # The altitude at the center of the rotation (z-offset)
-        speed = 0.75     # Controls the speed of travel around the circle (rad/s)
+        radius = 0.75   # Radius of the circle on the local plane
+        altitude = 1.0  # The altitude at the center of the rotation (z-offset)
+        speed = 1.0    # Controls the speed of travel around the circle (rad/s)
         
         # --- Rotation Parameters ---
         # Speed at which the entire plane of the circle rotates
@@ -214,7 +214,7 @@ class OffboardControl(Node):
             trajectory_msg = TrajectorySetpoint()
             
             # Calculate 3D position
-            x, y, z, yaw = self.rotating_circle_path(self.t)
+            x, y, z, yaw = self.rotating_figure_eight_path(self.t)
             
             # Set the trajectory position (NED coordinates, hence negative z for altitude)
             trajectory_msg.position[0] = x

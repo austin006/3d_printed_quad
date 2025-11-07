@@ -14,9 +14,9 @@ def rotating_circle_path(t):
     """
     
     # --- Circle Trajectory Parameters ---
-    radius = 2.0    # Radius of the circle on the local plane
-    altitude = 2.5  # The altitude at the center of the rotation (z-offset)
-    speed = 2.0     # Controls the speed of travel around the circle (rad/s)
+    radius = .75    # Radius of the circle on the local plane
+    altitude = 1.0  # The altitude at the center of the rotation (z-offset)
+    speed = 1.5     # Controls the speed of travel around the circle (rad/s)
     
     # --- Rotation Parameters ---
     # Speed at which the entire plane of the circle rotates
