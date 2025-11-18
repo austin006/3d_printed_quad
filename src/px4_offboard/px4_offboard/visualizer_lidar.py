@@ -110,7 +110,6 @@ class PX4Visualizer(Node):
 
     def lidar_callback(self, msg):
         # Store the latest lidar message
-        self.get_logger().info("Lidar scan received")
         self.latest_lidar_msg = msg
 
     def create_arrow_marker(self, id, tail, vector):
