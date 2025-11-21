@@ -3,6 +3,7 @@
     "image": "frostin/ros2-px4",
     // "build": {
         // "dockerfile": "Dockerfile"
+        // "dockerfile": "Dockerfile.jazzy"
         // "dockerfile": "Dockerfile.vgl"
     // },
     "mounts": [

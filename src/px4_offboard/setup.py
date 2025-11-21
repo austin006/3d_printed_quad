@@ -48,6 +48,7 @@ setup(
                 'orbit_offboard_control = px4_offboard.orbit_offboard_control:main',
                 'trajectory_control = px4_offboard.trajectory_control:main',
                 'visualizer_lidar = px4_offboard.visualizer_lidar:main',
+                'visualizer_invariant_set = px4_offboard.visualizer_invariant_set:main',
         ],
     },
 )

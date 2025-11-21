@@ -13,7 +13,7 @@ from px4_msgs.msg import VehicleLocalPosition
 from px4_msgs.msg import TrajectorySetpoint
 from geometry_msgs.msg import PoseStamped, Point, TransformStamped
 from nav_msgs.msg import Path
-from visualization_msgs.msg import Marker
+from visualization_msgs.msg import Marker, MarkerArray
 from sensor_msgs.msg import LaserScan
 from tf2_ros import TransformBroadcaster
 
@@ -34,6 +34,10 @@ class PX4Visualizer(Node):
     def __init__(self):
         super().__init__('px4_visualizer')
         self.get_logger().info("PX4 Visualizer Node has been started.")
+
+        # Declare parameter for epsilon (invariant set calculation)
+        self.declare_parameter('epsilon', -0.05)
+        self.epsilon: float = float(self.get_parameter('epsilon').value)
 
         ## Configure subscriptions
         qos_profile = QoSProfile(
@@ -73,6 +77,9 @@ class PX4Visualizer(Node):
         # Publisher for transformed lidar scan
         self.lidar_pub = self.create_publisher(LaserScan, '/px4_visualizer/lidar_scan', 10)
         
+        # Publisher for invariant set markers
+        self.invariant_set_pub = self.create_publisher(MarkerArray, '/px4_visualizer/invariant_set_markers', 10)
+        
         # TF broadcaster for lidar frame
         self.tf_broadcaster = TransformBroadcaster(self)
 
@@ -83,6 +90,7 @@ class PX4Visualizer(Node):
         self.vehicle_path_msg = Path()
         self.setpoint_path_msg = Path()
         self.latest_lidar_msg = None
+        self.safe_boundary_points = []  # Store calculated boundary points
         
         timer_period = 0.05  # seconds
         self.timer = self.create_timer(timer_period, self.cmdloop_callback)
@@ -111,6 +119,105 @@ class PX4Visualizer(Node):
     def lidar_callback(self, msg):
         # Store the latest lidar message
         self.latest_lidar_msg = msg
+        
+        # Calculate invariant set (but don't publish yet - wait for cmdloop)
+        self.calculate_invariant_set(msg)
+
+    def calculate_invariant_set(self, msg: LaserScan):
+        """Calculate the invariant set boundary from lidar data"""
+        distances = np.array(msg.ranges)
+        thetas = np.linspace(msg.angle_min, msg.angle_max, len(distances))
+
+        # Filter out invalid readings
+        valid_mask = np.isfinite(distances) & (distances >= msg.range_min) & (distances <= msg.range_max)
+        distances = distances[valid_mask]
+        thetas = thetas[valid_mask]
+
+        if len(distances) == 0:
+            self.get_logger().warn('No valid lidar data received.')
+            return
+
+        xs = distances * np.cos(thetas)
+        ys = distances * np.sin(thetas)
+
+        data_vectors = np.vstack([xs, ys])
+
+        valid_ps = data_vectors.copy()
+        valid_distances = distances.copy()
+
+        safe_boundary_points = []
+
+        while valid_ps.shape[1] > 0:
+            min_idx = np.argmin(valid_distances)
+            p_closest = valid_ps[:, min_idx].reshape((-1, 1))
+
+            norm = np.linalg.norm(p_closest)
+            if norm < 1e-6:
+                self.get_logger().warn('Skipping zero-length vector')
+                mask_temp = np.ones(valid_ps.shape[1], dtype=bool)
+                mask_temp[min_idx] = False
+                valid_ps = valid_ps[:, mask_temp]
+                valid_distances = valid_distances[mask_temp]
+                continue
+
+            a_hat = p_closest / norm
+
+            parallel_vector = np.array([[-a_hat[1, 0]], [a_hat[0, 0]]])
+            safe_boundary_points.append((p_closest.copy(), parallel_vector.copy()))
+
+            b = np.dot(a_hat.T, p_closest) + self.epsilon
+
+            safe_region_mask = (valid_ps.T @ a_hat < b).flatten()
+            safe_region_mask[min_idx] = False
+
+            valid_ps = valid_ps[:, safe_region_mask]
+            valid_distances = valid_distances[safe_region_mask]
+
+        self.get_logger().info(f'Generated {len(safe_boundary_points)} boundary lines')
+        # Store the boundary points instead of publishing immediately
+        self.safe_boundary_points = safe_boundary_points
+
+    def publish_invariant_set_markers(self, safe_boundary_points, timestamp):
+        """Publish the invariant set boundary as markers for RViz"""
+        marker = Marker()
+        marker.header.stamp = timestamp
+        marker.header.frame_id = 'lidar_frame'  # Use lidar_frame for proper transformation
+        marker.ns = "invariant_set"
+        marker.id = 0
+        marker.type = Marker.LINE_LIST
+        marker.action = Marker.ADD
+        marker.scale.x = 0.02  # Line thickness
+        marker.color.r = 1.0
+        marker.color.g = 0.0
+        marker.color.b = 0.0
+        marker.color.a = 1.0
+
+        for point, slope in safe_boundary_points:
+            if np.any(np.isnan(point)) or np.any(np.isnan(slope)):
+                self.get_logger().warn('Skipping NaN boundary point')
+                continue
+
+            temp1 = point + slope * 10
+            temp2 = point - slope * 10
+
+            point1 = Point()
+            point1.x = float(temp1[0, 0])
+            point1.y = float(temp1[1, 0])
+            point1.z = 0.0
+
+            point2 = Point()
+            point2.x = float(temp2[0, 0])
+            point2.y = float(temp2[1, 0])
+            point2.z = 0.0
+
+            marker.points.append(point1)
+            marker.points.append(point2)
+
+        # self.get_logger().info(f'Publishing invariant set marker with {len(marker.points)} points')
+
+        markers = MarkerArray()
+        markers.markers.append(marker)
+        self.invariant_set_pub.publish(markers)
 
     def create_arrow_marker(self, id, tail, vector):
         msg = Marker()
@@ -158,9 +265,12 @@ class PX4Visualizer(Node):
         velocity_msg = self.create_arrow_marker(1, self.vehicle_local_position, self.vehicle_local_velocity)
         self.vehicle_vel_pub.publish(velocity_msg)
         
+        # Get current timestamp for TF and markers
+        current_time = self.get_clock().now().to_msg()
+        
         # Broadcast TF transform for lidar frame
         t = TransformStamped()
-        t.header.stamp = self.get_clock().now().to_msg()
+        t.header.stamp = current_time
         t.header.frame_id = 'map'
         t.child_frame_id = 'lidar_frame'
         t.transform.translation.x = self.vehicle_local_position[0]
@@ -175,7 +285,7 @@ class PX4Visualizer(Node):
         # Republish lidar scan with updated frame
         if self.latest_lidar_msg is not None:
             lidar_msg = LaserScan()
-            lidar_msg.header.stamp = self.get_clock().now().to_msg()
+            lidar_msg.header.stamp = current_time
             lidar_msg.header.frame_id = 'lidar_frame'
             lidar_msg.angle_min = self.latest_lidar_msg.angle_min
             lidar_msg.angle_max = self.latest_lidar_msg.angle_max
@@ -187,6 +297,10 @@ class PX4Visualizer(Node):
             lidar_msg.ranges = self.latest_lidar_msg.ranges
             lidar_msg.intensities = self.latest_lidar_msg.intensities
             self.lidar_pub.publish(lidar_msg)
+        
+        # Publish invariant set markers synchronized with TF
+        if len(self.safe_boundary_points) > 0:
+            self.publish_invariant_set_markers(self.safe_boundary_points, current_time)
 
 def main(args=None):
     rclpy.init(args=args)

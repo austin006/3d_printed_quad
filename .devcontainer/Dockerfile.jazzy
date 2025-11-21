@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y \
     xterm \
     # QGroundControl dependencies
     libfuse2 \
-    libxcb-xinerama0 \
+    libxcb": "frostin/ros2-px4",-xinerama0 \
     libxkbcommon-x11-0 \
     libxcb-cursor-dev \
     gstreamer1.0-plugins-bad \
@@ -81,7 +81,7 @@ RUN mkdir -p src \
     && cd src \
     && git clone https://github.com/PX4/px4_msgs.git -b release/1.15
 
-# Copy PX4 ROS2 packages
+# Copy px4_msgs_old and translation node packages
 RUN /root/PX4-Autopilot/Tools/copy_to_ros_ws.sh /root/ros2_ws
 
 # Install colcon and dependencies
