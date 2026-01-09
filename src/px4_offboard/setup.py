@@ -49,6 +49,7 @@ setup(
                 'trajectory_control = px4_offboard.trajectory_control:main',
                 'visualizer_lidar = px4_offboard.visualizer_lidar:main',
                 'visualizer_invariant_set = px4_offboard.visualizer_invariant_set:main',
+                'cbf_safe_controller = px4_offboard.cbf_safe_controller:main',
         ],
     },
 )

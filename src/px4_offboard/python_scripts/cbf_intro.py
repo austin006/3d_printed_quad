@@ -9,7 +9,7 @@ max_speed = 2.0  # maximum velocity
 alpha = 1.0  # CBF class-K function parameter (controls aggressiveness)
 
 # Environment setup
-start = np.array([0.0, 0.0])
+start = np.array([0.0, 0.1])
 goal = np.array([10.0, 0.0])
 obstacle_center = np.array([5.0, 0.0])
 obstacle_radius = 1.5

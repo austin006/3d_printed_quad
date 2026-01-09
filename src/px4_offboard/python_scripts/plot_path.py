@@ -21,7 +21,7 @@ def rotating_circle_path(t):
     # --- Rotation Parameters ---
     # Speed at which the entire plane of the circle rotates
     # around the X-axis (in rad/s).
-    rotation_speed = 0.2 
+    rotation_speed = 0.2
     
     # Current rotation angle of the plane at time t
     rotation_angle = rotation_speed * t
