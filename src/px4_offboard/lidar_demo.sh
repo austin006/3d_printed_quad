@@ -17,3 +17,6 @@ MicroXRCEAgent udp4 -p 8888
 
 # Start QGroundControl for drone monitoring and control
 sudo -u user qgroundcontrol
+
+# Build the px4_offboard package if not already built
+colcon build --symlink-install --packages-select px4_offboard
