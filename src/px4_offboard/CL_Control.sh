@@ -10,10 +10,28 @@ MicroXRCEAgent udp4 -p 8888
 cd ~/QGroundControl
 ./QGroundControl.AppImage
 
+# Heartbeat offboard control mode
+ros2 topic pub /fmu/in/offboard_control_mode px4_msgs/msg/OffboardControlMode "{
+  timestamp: $(date +%s%N),
+  position: true,
+  velocity: false,
+  acceleration: false,
+  attitude: false,
+  body_rate: false
+}" --rate 10
+
 # TrajectorySetpoint command (Fly to 2m high)
 ros2 topic pub /fmu/in/trajectory_setpoint px4_msgs/msg/TrajectorySetpoint "{
   timestamp: $(date +%s%N),
   position: [0.0, 0.0, -2.0],
+  yaw: 0.0
+}" --rate 10
+
+# Example of a velocity command (Go North at 1 m/s)
+ros2 topic pub /fmu/in/trajectory_setpoint px4_msgs/msg/TrajectorySetpoint "{
+  timestamp: $(date +%s%N | cut -b1-16),
+  position: [nan, nan, nan],
+  velocity: [1.0, 0.0, 0.0],
   yaw: 0.0
 }" --rate 10
 
