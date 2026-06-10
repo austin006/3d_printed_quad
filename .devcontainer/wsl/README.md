@@ -1,113 +1,118 @@
-# WSL Setup
+# WSL 2 Native ROS 2 & PX4 Setup
 
-The devcontainer.json and Dockerfile don't work. I couldn't figure out the network connections and everything required for WSL compatability.
+If you are encountering network routing or DDS discovery issues utilizing `devcontainer.json` or Docker environments inside Windows Subsystem for Linux (WSL), utilizing a native ROS 2 setup configured with Mirrored Networking yields a highly stable alternative.
 
-However, I got it working through a native ROS2 install inside of WSL.
+## 1. Environment & Dependency Installation
 
-## Instructions
+1. **Install ROS 2 Jazzy:** Follow the native installation steps inside your WSL Ubuntu instance via the [ROS 2 Jazzy Installation Guide](https://austin006.github.io/3d_printed_quad/software/ros2/#install-ros2-jazzy).
+2. **Install Drone Workspace Repositories:** Clone and compile your workspace repository, the Micro-XRCE-DDS Agent, and the PX4-Autopilot stack directly into your user's home directory. Refer to the [Project Setup Instructions](https://austin006.github.io/3d_printed_quad/software/ros2/#set-up) for build specifics. Your home directory layout should reflect the following structural alignment:
+```bash
+~$ ls
+3d_printed_quad  Micro-XRCE-DDS-Agent  PX4-Autopilot
+```
 
-1. Install ROS2 Jazzy in WSL [(instructions)](https://austin006.github.io/3d_printed_quad/software/ros2/#install-ros2-jazzy)
+3. **Install CycloneDDS:** Ensure the preferred RMW implementation package is installed in your environment:
+```bash
+sudo apt update && sudo apt install ros-jazzy-rmw-cyclonedds-cpp
+```
 
-2. Install the repo, MicroDDS, and PX4 in the home directory as shown below. Refer to the [setup instructions](https://austin006.github.io/3d_printed_quad/software/ros2/#set-up) for help.
+---
 
-    ``` bash
-    ~$ ls
-    3d_printed_quad  Micro-XRCE-DDS-Agent  PX4-Autopilot
-    ```
+## 2. Shell Configuration (`~/.bashrc`)
 
-3. Add the following to the end of your `~/.bashrc` file:
-
-    ``` bash
-    # ROS2 Jazzy bash configuration
-    source /opt/ros/jazzy/setup.bash
-    export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-    export ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET
-    export ROS_DOMAIN_ID=0
-    export CYCLONEDDS_NETWORK_INTERFACE=lo
-
-    # Auto-append --no-daemon for absolute WSL stability and bypass broken sockets
-    ros2() {
-        if [[ "$1" == "node" && "$2" == "list" ]]; then
-            command ros2 node list --no-daemon "${@:3}" 2> >(grep -v "Failed to parse type hash" >&2)
-        elif [[ "$1" == "topic" && "$2" == "list" ]]; then
-            command ros2 topic list --no-daemon "${@:3}" 2> >(grep -v "Failed to parse type hash" >&2)
-        elif [[ "$1" == "topic" && "$2" == "hz" ]]; then
-            command ros2 topic hz --no-daemon "${@:3}" 2> >(grep -v "Failed to parse type hash" >&2)
-        elif [[ "$1" == "topic" && "$2" == "echo" ]]; then
-            command ros2 topic echo --no-daemon "${@:3}" 2> >(grep -v "Failed to parse type hash" >&2)
-        else
-            command ros2 "$@" 2> >(grep -v "Failed to parse type hash" >&2)
-        fi
-    }
-    ```
-
-4. Enable mirrored network mode. In the Windows user home directory add a `.wslconfig` file with the following:
-
-    ``` Ini, TOML
-    [wsl2]
-    networkingMode=mirrored
-    ```
-
-## Set Up QGroundControl (Windows)
-
-1. Go to the official website: [https://qgroundcontrol.com](https://qgroundcontrol.com)
-2. Download the latest version for **Windows** and launch the application
-
-### Configure the UDP Communication Link
-
-3. Click the **Q icon** in the top-left corner
-4. Go to **Application Settings → Comm Links**
-5. Click **Add New Link**
-6. Set the **Type** to `UDP`
-7. Set the **Port** to `18570`
-
-### Get Your WSL IP Address
-
-8. In your Ubuntu terminal, run:
+Append the following blocks to the absolute end of your `~/.bashrc` file. This forces the system to use CycloneDDS bound to local loopback and declares a robust wrapper function to cleanly strip benign CycloneDDS type-hash errors while forcing ROS 2 to bypass erratic background daemons.
 
 ```bash
-ifconfig
+# ROS2 Jazzy Core Network Configuration
+source /opt/ros/jazzy/setup.bash
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+export ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET
+export ROS_DOMAIN_ID=0
+export CYCLONEDDS_NETWORK_INTERFACE=lo
+
+# Custom Wrapper: Forces live execution (--no-daemon) and filters metadata log spam
+ros2() {
+    if [[ "$1" == "node" && "$2" == "list" ]]; then
+        command ros2 node list --no-daemon "${@:3}" 2> >(grep -v "Failed to parse type hash" >&2)
+    elif [[ "$1" == "topic" && "$2" == "list" ]]; then
+        command ros2 topic list --no-daemon "${@:3}" 2> >(grep -v "Failed to parse type hash" >&2)
+    elif [[ "$1" == "topic" && "$2" == "hz" ]]; then
+        command ros2 topic hz --no-daemon "${@:3}" 2> >(grep -v "Failed to parse type hash" >&2)
+    elif [[ "$1" == "topic" && "$2" == "echo" ]]; then
+        command ros2 topic echo --no-daemon "${@:3}" 2> >(grep -v "Failed to parse type hash" >&2)
+    else
+        command ros2 "$@" 2> >(grep -v "Failed to parse type hash" >&2)
+    fi
+}
+
 ```
 
-Look for the `inet` address under your network adapter — for example:
+*Run `source ~/.bashrc` in active terminals to apply configuration changes.*
 
-```
-inet 172.20.106.139
-```
+---
 
-9. Copy that IP address, paste it into the **Server Address** field in QGC, and click **Add Server**
+## 3. Enable Windows WSL Mirrored Networking
 
-## Helpful commands
+By default, WSL 2 operates on an isolated Network Address Translation (NAT) schema, creating a virtual firewall between your Windows apps and internal Linux ROS 2 utilities. Enabling Mirrored Mode strips this boundary away.
 
-Cleanly Fix the ROS2 Daemon
-
-``` bash
-# Force kill the root-owned zombie processes
-sudo pkill -f ros2
-sudo pkill -f daemon
-
-# Clean up any leftover root-owned socket files
-sudo rm -rf ~/.ros/ros2_daemon_*
+1. In Windows, navigate to your User Profile directory (Press `Win + R`, type `%USERPROFILE%`, and hit Enter).
+2. Create or modify a text file named exactly `.wslconfig`.
+3. Add the following global runtime parameter block:
+```ini
+[wsl2]
+networkingMode=mirrored
 ```
 
-Shutdown wsl to restart it
-
-``` DOS
+4. Apply the structural change by terminating all running instances of WSL via an administrative Windows PowerShell/Command Prompt window:
+```cmd
 wsl --shutdown
 ```
 
-## Notes from GenAI
+---
 
-### Why Keeping `--no-daemon` is Best for WSL
+## 4. QGroundControl (Windows Host) Integration
 
-Even with the permissions fixed, keeping the `--no-daemon` bypass in your `.bashrc` is highly recommended for WSL 2.
+Because Mirrored Mode is enabled, **WSL and your Windows host share the exact same network space**. There is no need to hunt down fluctuating dynamic IP assignments using `ifconfig`.
 
-The ROS 2 daemon was designed for physical Linux machines where network interfaces are static. In WSL 2—even with Mirrored Networking—virtual network adapters frequently wake up, sleep, or shift states when Windows handles VPNs, Wi-Fi switches, or sleep mode.
+1. Download and install the native Windows bundle via [QGroundControl.com](https://qgroundcontrol.com).
+2. Launch **QGroundControl** on your Windows desktop.
+3. Access configuration configurations: Click the **Q Icon** in the upper-left viewport -> Select **Application Settings** -> Navigate to **Comm Links**.
+4. Select **Add New Link** and input the following configuration properties:
+    * **Type:** `UDP`
+    * **Port:** `18570`
+    * **Server Address:** `127.0.0.1` (or `localhost`)
 
-The daemon easily gets "confused" by these Windows host network shifts and caches stale DDS discovery data. Forcing `--no-daemon` tells ROS 2 to query the network live every single time you type a command, making your development environment significantly more stable and robust.
+5. Click **Add Server**, select your newly established comm link, and click **Connect**.
 
-### WSL Mirror Network Mode (The WSL Networking Fix)
+---
 
-By default, WSL 2 uses a NAT (Network Address Translation) architecture. This means WSL has a completely different IP address than your Windows host, and internal loopbacks (127.0.0.1) sometimes fail to cross the bridge between Windows processes, WSL UI processes, and the DDS multicast ports.
+## Technical Appendix & Diagnostic Notes
 
-Windows 11 allows you to set WSL to Mirrored Mode, which forces WSL to share the exact same network interfaces and IP addresses as your Windows host.
+### Why Explicitly Bypassing the Daemon (`--no-daemon`) Matters
+
+The integrated ROS 2 background daemon process assumes standard, static infrastructure typical to standalone hardware environments. Within a virtualized host container runtime context (even with Mirrored Networking), host-side Windows system behaviors—such as cycling wireless network adapters, initializing corporate VPN tunnels, or system power-state transitions—frequently drop active virtual interfaces.
+
+When this happens, the background daemon stalls out or caches corrupt, stale discovery paths. Forcing `--no-daemon` strips away this background caching layer completely, ensuring ROS 2 directly samples the state of the active system interface during execution.
+
+### Diagnostic Command Routines
+
+#### Purging Ghost Root-Owned Daemons
+
+If you ever execute a ROS 2 command using `sudo` or elevation privileges, a persistent, system root-owned daemon process can initialize. This blocks regular non-root CLI processes from binding to internal communication pipes, manifesting as random terminal timeouts. Clear them using the following routine:
+
+```bash
+# Force-terminate system-wide dangling ROS/daemon threads
+sudo pkill -f ros2
+sudo pkill -f daemon
+
+# Clear out lingering root-owned IPC socket configurations
+sudo rm -rf ~/.ros/ros2_daemon_*
+```
+
+#### Complete Virtual System Hard Reset
+
+To force clean reload cycles on network interface alterations, drop the subsystem completely from a host shell terminal:
+
+```cmd
+wsl --shutdown
+```
